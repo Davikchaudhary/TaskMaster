@@ -16,7 +16,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+    
         console.log(email, password);
         fetch("http://localhost:5000/login-user", {
             method: "POST",
@@ -34,10 +34,10 @@ const Login = () => {
         .then((data) => {
             console.log(data, "userRegister");
             if (data.status === "ok") {
-                alert("login successful");
+                alert("Login successful");
                 window.localStorage.setItem("token", data.data);
                 window.localStorage.setItem("loggedIn", true);
-                window.location.href = "./userDetails";
+                window.location.href = "/home";
             }
         })
         .catch((error) => {
@@ -45,6 +45,7 @@ const Login = () => {
             alert("An error occurred. Please try again later.");
         });
     };
+    
 
     return (
         <div className='loginContainer'>
