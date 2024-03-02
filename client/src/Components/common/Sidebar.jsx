@@ -15,7 +15,6 @@ const Sidebar = () => {
   };
 
   const toggleMenu = () => {
-    console.log(toggleMenu);
     setIsMenuOpen(!isMenuOpen);
   };
 
