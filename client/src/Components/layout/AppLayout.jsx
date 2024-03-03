@@ -1,3 +1,4 @@
+// AppLayout.js
 import React, { useState } from 'react';
 import Navbar from '../common/Navbar';
 import Sidebar from '../common/Sidebar';
@@ -13,8 +14,8 @@ const AppLayout = () => {
   return (
     <div className="grid-container">
       <Navbar toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      <Board />
+      <Sidebar isOpen={sidebarOpen} />
+      <Board toggleSidebarAction={toggleSidebar} isSidebarOpen={sidebarOpen}/>
     </div>
   );
 };
