@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Sidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [favoriteTasks, setFavoriteTasks] = useState([]);
 
-  const handleToggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
-  };
+  useEffect(() => {
+    if (isOpen && !isMenuOpen) {
+      toggleMenu();
+    }
+  }, [isOpen]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -36,66 +33,37 @@ const Sidebar = () => {
 
   const handleAddToFavorites = (index) => {
     const taskToAdd = tasks[index];
-    setTasks(tasks.filter((task, i) => i !== index)); // Remove task from tasks list
-    setFavoriteTasks([...favoriteTasks, taskToAdd]); // Add task to favorites list
+    setTasks(tasks.filter((task, i) => i !== index)); 
+    setFavoriteTasks([...favoriteTasks, taskToAdd]); 
   };
   
   const handleRemoveFromFavorites = (index) => {
     const taskToRemove = favoriteTasks[index];
-    setFavoriteTasks(favoriteTasks.filter((task, i) => i !== index)); // Remove task from favorites list
-    setTasks([...tasks, taskToRemove]); // Add task back to tasks list
+    setFavoriteTasks(favoriteTasks.filter((task, i) => i !== index)); 
+    setTasks([...tasks, taskToRemove]); 
   };
-  
+
   
   return (
     <>
-
-    <button
-      onClick={handleToggleSidebar}
-      data-drawer-target="separator-sidebar"
-      data-drawer-toggle="separator-sidebar"
-      aria-controls="separator-sidebar"
-      type="button"
-      className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-    >
-      <span className="sr-only">Open sidebar</span>
-      <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 transform transition-transform`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-    </button>
-
-    <aside
-      id="separator-sidebar"
-      className={`fixed top-0 left-0 z-40 w-72 h-screen transition-transform ${
-        sidebarOpen ? '' : '-translate-x-full sm:translate-x-0'
-      }`}
-      aria-label="Sidebar"
-    >
-      <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-slate-800">
+    
+     <aside
+        id="separator-sidebar"
+        className={`fixed left-0 z-40 w-1/2 sm:w-1/4 h-screen sm:h-auto transition-transform ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        aria-label="Sidebar"
+      >
+        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-slate-800">
 
         <div className="space-y-2 font-medium">
-          <button
-            onClick={handleCloseSidebar}
-            className="flex justify-between p-2 w-full text-xl hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+          <a
+            href='/home'
+            className="flex justify-center p-2 w-full text-xl hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
-            <span className="ms-3">TaskMaster</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-6 w-6 transform transition-transform ${
-                sidebarOpen ? 'rotate-180' : 'rotate-0'
-              }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
+            <span>TaskMaster</span>
+           
+          </a>
         </div>
 
          {/* Menu start */}
@@ -127,7 +95,8 @@ const Sidebar = () => {
               </ul>
             </li>
           </ul>
-
+          
+        {/* favourite */}
         <div id='favoriteSection'>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray">
             <li>
@@ -180,7 +149,7 @@ const Sidebar = () => {
           </ul>
         </div>
 
-
+        {/* Task section */}
         <div id='tasksList'>
         <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray">
           <li>
@@ -245,8 +214,6 @@ const Sidebar = () => {
                         d="M5 7l5-5 5 5M5 7V21a2 2 0 002 2h10a2 2 0 002-2V7m-4 0v9M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"
                       ></path>
                     </svg>
-
-
                     </button>
                   </div>
                 </li>
