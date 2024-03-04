@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = ({ toggleSidebar }) => {
   return (
-    <nav className="flex items-center justify-between bg-gray-800 text-white py-4 px-6">
+    <nav className="flex items-center justify-between bg-grey text-white py-4 px-6">
       <div>
         <button
           onClick={toggleSidebar}

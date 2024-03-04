@@ -53,12 +53,12 @@ const Sidebar = ({ isOpen }) => {
         }`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-slate-800">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-grey dark:bg-grey">
 
         <div className="space-y-2 font-medium">
           <a
             href='/home'
-            className="flex justify-center p-2 w-full text-xl hover:text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            className="flex justify-center p-2 w-full text-xl hover:text-gray-900 rounded-lg dark:text-pink hover:bg-gray-100 dark:hover:bg-gray-700 group"
           >
             <span>TaskMaster</span>
            
@@ -153,7 +153,7 @@ const Sidebar = ({ isOpen }) => {
             <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray">
               <li>
                 <div className="flex justify-between items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                  <span className='ms-3'>Create Task List</span>
+                  <span className='ms-3'>Create Board</span>
                   
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
