@@ -21,7 +21,7 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen }) {
   const dispatch = useDispatch();
   
   const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive);
+  const board = boards.boards.find((board) => board.isActive);
   const boardName = board ? board.name : '';
 
   const onDropdownClick = () => {

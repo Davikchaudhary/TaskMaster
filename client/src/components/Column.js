@@ -22,7 +22,7 @@ function Column({ colIndex }) {
   const dispatch = useDispatch();
   const [color, setColor] = useState(null)
   const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
+  const board = boards.boards.find((board) => board.isActive === true);
   const col = board.columns.find((col, i) => i === colIndex);
   useEffect(() => {
     setColor(shuffle(colors).pop())

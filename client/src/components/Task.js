@@ -4,7 +4,7 @@ import TaskModal from "../modals/TaskModal";
 
 function Task({ colIndex, taskIndex }) {
   const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
+  const board = boards.boards.find((board) => board.isActive === true);
   const columns = board.columns;
   const col = columns.find((col, i) => i === colIndex);
   const task = col.tasks.find((task, i) => i === taskIndex);
