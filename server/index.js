@@ -68,3 +68,46 @@ app.post('/login-user', async (req, res) => {
 
     res.json({ status: 'error', error: 'Invalid Password' });
 });
+
+
+
+require("./board");
+const Board=mongoose.model("Board");
+
+// Get all boards
+app.get('/boards', (req, res) => {
+    Board.find()
+      .then(boards => res.json(boards))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
+
+// Get a single board by ID
+app.get('/boards/:id', (req, res) => {
+    Board.findById(req.params.id)
+      .then(board => res.json(board))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
+// Create a new board
+app.post('/boards', (req, res) => {
+    const newBoard = new Board(req.body);
+    newBoard.save()
+      .then(() => res.json('Board added!'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
+
+  // Update a board by ID
+app.put('/boards/:id', (req, res) => {
+    Board.findByIdAndUpdate(req.params.id, req.body)
+      .then(() => res.json('Board updated!'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+  
+  // Delete a board by ID
+ app.delete('/boards/:id', (req, res) => {
+    Board.findByIdAndDelete(req.params.id)
+      .then(() => res.json('Board deleted.'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
