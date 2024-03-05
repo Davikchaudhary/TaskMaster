@@ -52,23 +52,19 @@ app.post("/register",async(req,res)=>{
 app.post('/login-user', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    const userId = user._id;
     
     if (!user) {
         return res.send({ error: "User Not Found" });
     }
 
-    if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({}, JWT_SECRET);
-
-        if (res.statusCode === 201) {
-            return res.json({ status: 'ok', data: token });
-        } else {
-            return res.json({ error: "error" });
-        }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    console.log(user);
+    if (passwordMatch) {
+        // console.log(passwordMatch)
+        const token = jwt.sign({userId}, JWT_SECRET);
+        return res.status(201).json({status: "ok"});
     }
 
     res.json({ status: 'error', error: 'Invalid Password' });
 });
-
-
-
