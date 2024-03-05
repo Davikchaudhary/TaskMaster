@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import boardsSlice from "./boardsSlice";
-
+import boardsReducer from "./boardsSlice"; // Adjust the import to match your file structure
 
 const store = configureStore({
   reducer: {
-    boards: boardsSlice.reducer,
-  }
-})
+    boards: boardsReducer, // Provide the correct reducer
+  },
+});
 
-export default store
+export default store;

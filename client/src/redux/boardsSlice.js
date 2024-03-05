@@ -1,9 +1,25 @@
-import { createSlice } from "@reduxjs/toolkit";
-import data from "../data.json";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+// Define async thunk action creator to fetch boards from the server
+export const fetchBoards = createAsyncThunk("boards/fetchBoards", async () => {
+  try {
+    const response = await axios.get("/boards"); 
+    return response.data;
+  } catch (error) {
+    throw Error("Failed to fetch boards from the server");
+  }
+});
+
+const initialState = {
+  boards: [],
+  status: "idle",
+  error: null,
+};
 
 const boardsSlice = createSlice({
   name: "boards",
-  initialState: data.boards,
+  initialState,
   reducers: {
     addBoard: (state, action) => {
       const isActive = state.length > 0 ? false : true;
@@ -98,6 +114,33 @@ const boardsSlice = createSlice({
       col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchBoards.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchBoards.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.boards = action.payload;
+      })
+      .addCase(fetchBoards.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+  },
 });
 
-export default boardsSlice;
+export const {
+  addBoard,
+  editBoard,
+  deleteBoard,
+  setBoardActive,
+  addTask,
+  editTask,
+  dragTask,
+  setSubtaskCompleted,
+  setTaskStatus,
+  deleteTask,
+} = boardsSlice.actions;
+
+export default boardsSlice.reducer;
