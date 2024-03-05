@@ -27,7 +27,7 @@ function Home() {
 
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive === true);
-  const columns = board.columns;
+  const columns = board ? board.columns : [];
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 

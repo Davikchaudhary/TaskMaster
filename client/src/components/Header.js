@@ -22,6 +22,7 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen }) {
   
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive);
+  const boardName = board ? board.name : '';
 
   const onDropdownClick = () => {
     setOpenDropdown((state) => !state);
@@ -61,7 +62,7 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen }) {
         {/* center */}
           <div className=" flex items-center ">
             <h3 className=" truncate max-w-[200px] md:text-2xl text-xl font-bold font-sans">
-              {board.name}
+              {boardName}
             </h3>
             <img
               src={openDropdown ? iconUp : iconDown}
