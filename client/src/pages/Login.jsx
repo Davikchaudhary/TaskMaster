@@ -33,7 +33,7 @@ const Login = () => {
         .then((data) => {
             console.log(data, "userRegister");
             if (data.status === "ok") {
-                alert("Login successful");
+                
                 window.localStorage.setItem("token", data.data);
                 window.localStorage.setItem("loggedIn", true);
                 window.location.href = "/home";
