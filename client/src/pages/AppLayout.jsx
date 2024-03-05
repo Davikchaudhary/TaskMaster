@@ -14,13 +14,14 @@ function AppLayout() {
     dispatch(fetchBoards());
   }, [dispatch]);
 
-  const activeBoard = boards.find((board) => board.isActive);
-
   useEffect(() => {
-    if (!activeBoard && boards.length > 0) {
-      dispatch(setBoardActive({ index: 0 }));
+    if (boards.length > 0) {
+      const activeBoard = boards.find((board) => board.isActive);
+      if (!activeBoard) {
+        dispatch(setBoardActive({ index: 0 }));
+      }
     }
-  }, [activeBoard, boards, dispatch]);
+  }, [boards, dispatch]);
 
   return (
     <div className=" overflow-hidden  overflow-x-scroll">
@@ -51,5 +52,6 @@ function AppLayout() {
     </div>
   );
 }
+
 
 export default AppLayout;

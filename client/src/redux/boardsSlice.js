@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Define async thunk action creator to fetch boards from the server
 export const fetchBoards = createAsyncThunk("boards/fetchBoards", async () => {
   try {
-    const response = await axios.get("/boards"); 
+    const response = await axios.get("http://localhost:5000/boards"); // Specify the correct URL for your server's endpoint
     return response.data;
   } catch (error) {
     throw Error("Failed to fetch boards from the server");
   }
 });
+
 
 const initialState = {
   boards: [],
