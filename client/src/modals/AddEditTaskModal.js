@@ -17,7 +17,7 @@ function AddEditTaskModal({
   const [isValid, setIsValid] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const board = useSelector((state) => state.boards).find(
+  const board = useSelector((state) => state.boards.boards).find(
     (board) => board.isActive
   );
 
