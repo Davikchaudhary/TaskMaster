@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import logo from '../assets/images/logo.png';
+import logo from '../../assets/images/logo.png';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -17,32 +21,24 @@ const Login = () => {
         e.preventDefault();
     
         console.log(email, password);
-        fetch("http://localhost:5000/login-user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
+        axios.post("http://localhost:5000/login-user",{
+            email,
+            password,
         })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data, "userRegister");
-            if (data.status === "ok") {
-                
-                window.localStorage.setItem("token", data.data);
+        .then((response) => {
+            console.log(response.data, "userRegister");
+            if (response.data.status === "ok") {
+                window.localStorage.setItem("token", response.data.token); 
                 window.localStorage.setItem("loggedIn", true);
-                window.location.href = "/home";
+                navigate("/");
             }
         })
+        
         .catch((error) => {
             console.error('Error:', error);
             alert("An error occurred. Please try again later.");
         });
+       
     };
     
 

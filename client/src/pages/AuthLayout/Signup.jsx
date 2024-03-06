@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import logo from '../assets/images/logo.png';
+import logo from '../../assets/images/logo.png';
+import {useNavigate} from 'react-router-dom'
+import axios from 'axios';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -8,6 +10,8 @@ const Signup = () => {
         password: "",
     });
     const [message, setMessage] = useState("");
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,23 +23,14 @@ const Signup = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { uname, email, password } = formData;
-        console.log(uname, email, password);
-        fetch("http://localhost:5000/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json", 
-                "Accept": "application/json",
-            },
-            body: JSON.stringify({
-                uname,
-                email,
-                password
-            }),
+        axios.post("http://localhost:5000/register",{
+            uname: formData.uname,
+            email: formData.email,
+            password: formData.password,
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data, 'userRegister');
+        .then((response) => {
+            console.log(response.data, 'userRegister');
+            const data = response.data;
             if (data.status === "ok") {
                 setMessage("Registration successful. You can now login.");
                 setFormData({
@@ -43,15 +38,17 @@ const Signup = () => {
                     email: "",
                     password: "",
                 });
-                window.location.href = "/login";
+                navigate("/login");
             } else {
                 setMessage("Registration failed. Please try again later.");
+                
             }
         })
         .catch(error => {
             console.error('Error:', error);
             setMessage("An error occurred. Please try again later.");
         });
+        
     }
     
 
