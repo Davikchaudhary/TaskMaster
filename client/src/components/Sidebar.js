@@ -9,7 +9,7 @@ import lightIcon from "../assets/icon-light-theme.svg";
 import showSidebarIcon from "../assets/icon-show-sidebar.svg";
 import hideSidebarIcon from "../assets/icon-hide-sidebar.svg";
 
-import boardsSlice from "../redux/boardsSlice";
+import boardsSlice, {setBoardActive} from "../redux/boardsSlice";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
 
 function Sidebar({ isSideBarOpen, setIsSideBarOpen }) {
@@ -59,7 +59,7 @@ function Sidebar({ isSideBarOpen, setIsSideBarOpen }) {
                       } `}
                       key={index}
                       onClick={() => {
-                        dispatch(boardsSlice.actions.setBoardActive({ index }));
+                        dispatch(setBoardActive({ index }));
                       }}
                     >
                       <img src={boardIcon} className="  filter-white  h-4 " />{" "}

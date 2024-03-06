@@ -92,6 +92,7 @@ const boardsSlice = createSlice({
       board.columns.find((col, i) => i === colIndex).tasks.push(task);
     },
     setSubtaskCompleted: (state, action) => {
+      console.log(board)
       const payload = action.payload;
       const board = state.boards.find((board) => board.isActive);
 
@@ -103,16 +104,35 @@ const boardsSlice = createSlice({
     setTaskStatus: (state, action) => {
       const payload = action.payload;
       const board = state.boards.find((board) => board.isActive);
-
+    
+      if (!board) {
+        console.error("Active board not found");
+        return;
+      }
+    
       const columns = board.columns;
       const col = columns.find((col, i) => i === payload.colIndex);
-      if (payload.colIndex === payload.newColIndex) return;
+      if (!col) {
+        console.error("Column not found");
+        return;
+      }
+    
       const task = col.tasks.find((task, i) => i === payload.taskIndex);
+      if (!task) {
+        console.error("Task not found");
+        return;
+      }
+    
       task.status = payload.status;
       col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
       const newCol = columns.find((col, i) => i === payload.newColIndex);
-      newCol.tasks.push(task);
+      if (newCol) {
+        newCol.tasks.push(task);
+      } else {
+        console.error("New column not found");
+      }
     },
+    
     deleteTask: (state, action) => {
       const payload = action.payload;
       const board = state.boards.find((board) => board.isActive);
