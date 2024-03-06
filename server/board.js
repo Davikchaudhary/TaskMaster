@@ -48,3 +48,20 @@ const Board = mongoose.model('Board', boardSchema);
 
 module.exports = Board;
 
+
+const Column = mongoose.model('Column', columnSchema);
+
+module.exports = Column;
+
+
+const Task = mongoose.model('Task', taskSchema);
+
+module.exports = Task;
+
+const Subtask = mongoose.model('Subtask', subtaskSchema);
+
+module.exports = Subtask;
+
+
+
+
