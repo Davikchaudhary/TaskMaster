@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../axios'
+
+import API from '../../axios';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Boards from '../../components/Boards';
@@ -9,12 +10,12 @@ const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
   const [openCreateBoards, setOpenCreateBoards] = useState(false);
   const [createdBoards, setCreatedBoards] = useState([]);
-  const [userDetail , setUserDetail] = useState([]);
+  const [userDetail , setUserDetail] = useState({});
   const [error, setError] = useState("");
 
   const getUserDetail = async () => {
     try {
-      const res = await axios.get("/login-user");
+      const res = await API.get(`/user/id`);
       console.log(res.data)
       setUserDetail(res.data)
     } catch (error) {
@@ -25,6 +26,10 @@ const Home = () => {
   useEffect(()=>{
     getUserDetail();
   },[])
+
+  console.log("error", error);
+console.log("user Details", userDetail)
+
 
   const handleHamburger = () => {
     setOpenHamburger(prevState => !prevState);
