@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from '../assets/images/logo.png';
+
 
 const Navbar = ({handleHamburger}) => {
   
@@ -10,7 +10,7 @@ const Navbar = ({handleHamburger}) => {
   }
 
   return (
-    <nav className=" fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+    <nav className=" fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-sky-800 dark:border-sky-800">
       <div className="px-4 py-3 lg:px-6 lg:pl-4 flex items-center justify-between">
         <div className="flex items-center justify-start">
           <button
@@ -32,7 +32,6 @@ const Navbar = ({handleHamburger}) => {
             </svg>
           </button>
           <div className="flex items-center ms-2 md:me-24">
-            <img src={logo} className="h-8" alt="TaskMaster Logo" />
             <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-violet-300">
               TaskMaster
             </span>
@@ -45,12 +44,12 @@ const Navbar = ({handleHamburger}) => {
               <button
                 onClick={handleUserdetails}
                 type="button"
-                className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm p-1 rounded-md focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
                 <span className="sr-only">Open user menu</span>
-                <span className="text-white text-xl font-medium">USER</span>
+                <span className="text-white  font-medium">USER</span>
               </button>
             </div>
             <div className={`${openUserDetails ? 'block' : 'hidden'} z-50 absolute my-4 -mx-10 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
