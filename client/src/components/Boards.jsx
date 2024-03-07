@@ -25,6 +25,7 @@ const Boards = () => {
       updatedTasks[columnId].push(newTask); // Push the new task to the array
       return updatedTasks;
     });
+   
   };
   return (
     <div className="p-4 mt-20 sm:ml-64">
@@ -43,7 +44,7 @@ const Boards = () => {
         </div>
         </div>
 
-        <div className='flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10'> 
+        <div className='flex mt-2 flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10'> 
         
         <div className='flex flex-col w-full sm:w-1/4 gap-2'>
           <div className="flex justify-between rounded-xl bg-blue-400 p-4 shadow-lg">
@@ -53,7 +54,7 @@ const Boards = () => {
               </svg>
             </div>
             <div className="ml-4">
-              <h2 className="font-bold text-center text-black">Todo</h2>
+              <h2 className="font-bold text-center text-black">To-do</h2>
               <p className="mt-2 text-sm text-gray-600">Last updated</p>
             </div>
             <div className='flex justify-center text-center rounded-lg text-white'>
@@ -63,7 +64,6 @@ const Boards = () => {
           </div>
 
           <div className="flex  flex-col w-full p-2 mt-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-rose-300">
-
             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">Task Name</h5>
             <p className="font-normal text-gray-700 dark:text-gray-900">Task Description</p>
             <div className='space-x-5 text-end'>
