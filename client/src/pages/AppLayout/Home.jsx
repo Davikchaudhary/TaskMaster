@@ -10,19 +10,7 @@ const Home = () => {
   const [openCreateBoards, setOpenCreateBoards] = useState(false);
   const [createdBoards, setCreatedBoards] = useState([]);
 
-  useEffect(() => {
-    // Fetch boards from the API when the component mounts
-    fetchBoards();
-  }, []);
-
-  const fetchBoards = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/boards');
-      setCreatedBoards(response.data);
-    } catch (error) {
-      console.error('Error fetching boards:', error);
-    }
-  };
+ 
 
   const handleHamburger = () => {
     setOpenHamburger(prevState => !prevState);
@@ -38,13 +26,18 @@ const Home = () => {
 
   const handleCreateBoard = async (boardName) => {
     try {
-      await axios.post('http://localhost:5000/boards', { name: boardName });
-      fetchBoards(); // Fetch updated list of boards after creating a new one
+      // Send a POST request to your backend API
+      const response = await axios.post('/boards', { boardName });
+      console.log(response.data); // Log the response from the backend
+      setCreatedBoards(prevBoards => [...prevBoards, boardName]);
       setOpenCreateBoards(false);
     } catch (error) {
       console.error('Error creating board:', error);
+      // Handle error if needed
     }
   };
+
+ 
 
   return (
     <>

@@ -131,7 +131,7 @@ app.get('/boards/:id', (req, res) => {
 
 // Create a new board
 app.post('/boards', (req, res) => {
-    const newBoard = new Board(req.body);
+    const newBoard = new Board(req.body.name);
     newBoard.save()
       .then(() => res.json('Board added!'))
       .catch(err => res.status(400).json('Error: ' + err));
