@@ -7,7 +7,7 @@ const Tasks = () => {
   return (
     <div className="p-4 mt-20 h-screen sm:ml-64">
       <div className="flex flex-col">
-        <h2 className="mb-4 text-2xl text-center p-2 font-bold">Board Name</h2>
+        <h2 className="mb-4 text-2xl text-center p-2 font-bold">Sample Board</h2>
         <div className="flex justify-between">
           <h3 className="text-right">Created on: date time</h3>
           <h3 className="text-right">Created by: Username</h3>
