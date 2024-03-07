@@ -41,7 +41,7 @@ const columnSchema = new Schema({
 const boardSchema = new Schema({
   name: { type: String, required: true },
   isActive: { type: Boolean, default: false },
-  columns: [columnSchema]
+  columns: {type:columnSchema,default:[]}
 });
 
 const Board = mongoose.model('Board', boardSchema);

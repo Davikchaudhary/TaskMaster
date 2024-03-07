@@ -72,11 +72,15 @@ app.post('/login-user', async (req, res) => {
 
 
 //get all users
-app.get('/users', (req, res) => {
-    User.find()
-      .then(users => res.json(users))
-      .catch(err => res.status(400).json('Error: ' + err));
-  });
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send({ users });
+  } catch (error) {
+    res.send({ status: "error", message: error.message });
+  }
+});
+
 
 // Get user details by ID
 app.get('/user/:id', async (req, res) => {
@@ -115,10 +119,15 @@ require("./board");
 const Board=mongoose.model("Board");
 
 // Get all boards
-app.get('/boards', (req, res) => {
-    Board.find()
-      .then(boards => res.json(boards))
-      .catch(err => res.status(400).json('Error: ' + err));
+app.get('/boards', async(req, res) => {
+  try {
+    const { name, isActive,columns } = req.body;
+    const boards = await Board.findOne({name});
+    
+    res.send({ boards });
+  } catch (error) {
+    res.send({ status: "error", message: error.message });
+  }
   });
 
 
