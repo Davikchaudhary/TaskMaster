@@ -1,3 +1,59 @@
+app.post("/register",async(req,res)=>
+{
+    const {uname,email,password}= req.body;
+    const encryptedPassword = await bcrypt.hash(password,10);
+    try 
+    {
+        const olduser = await User.findOne({email});
+        if(olduser){
+        return  res.send({error: "User Exists"});
+        }
+        const user=await User.create({
+            uname,
+            email,
+            password: encryptedPassword,
+            boards:[],
+        });
+
+
+        user.save()
+        .then(newUser => {
+          // After saving the user, create a new board for them
+          const newBoard = new Board({
+            name: "Default Board",
+            createdBy: newUser._id, // Assign the ObjectId of the new user
+            columns: {
+              todo: [],
+              backlog: [],
+              inProgress: [],
+              completed: []
+            }
+          });
+      
+          // Save the new board to the database
+          return newBoard.save();
+        })
+        .then(newBoard => {
+          // After saving the new board, add its ObjectId to the user's boards array
+          return User.findByIdAndUpdate(newBoard.createdBy, { $push: { boards: newBoard._id } }, { new: true });
+        })
+        .then(updatedUser => {
+          console.log("New User:", updatedUser);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+
+        res.send({status: "ok"});
+    } catch (error) {
+        res.send({status: "error"});
+    }
+});
+
+
+
+
+
 
 //get all users
 app.get("/users", async (req, res) => {

@@ -30,30 +30,62 @@ app.listen(5000,()=>{
 require("./userDetails");
 const User = mongoose.model("UserInfo");
 
-app.post("/register",async(req,res)=>{
-    const {uname,email,password}= req.body;
-    const encryptedPassword = await bcrypt.hash(password,10);
-    try {
-        const olduser = await User.findOne({email});
-        if(olduser){
-        return  res.send({error: "User Exists"});
-        }
-        await User.create({
-            uname,
-            email,
-            password: encryptedPassword,
-            boards:[],
-        });
-        res.send({status: "ok"});
-    } catch (error) {
-        res.send({status: "error"});
+require("./board.js");
+const Board=mongoose.model("Board");
+
+
+
+//signup
+app.post("/register", async (req, res) => {
+  const { uname, email, password } = req.body;
+  const encryptedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const oldUser = await User.findOne({ email });
+    if (oldUser) {
+      return res.send({ error: "User already exists" });
     }
+
+    const newUser = await User.create({
+      uname,
+      email,
+      password: encryptedPassword,
+      boards: [],
+    });
+
+    const newBoard = await Board.create({
+      name: "Default Board",
+      createdBy: newUser._id,
+      columns: {
+        todo: [],
+        backlog: [],
+        inProgress: [],
+        completed: [],
+      },
+    });
+
+    await newBoard.save();
+
+    newUser.boards.push(newBoard._id);
+    await newUser.save();
+
+    res.send({ status: "ok" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({ status: "error" });
+  }
 });
+
+
+
+
+
 
 app.post('/login-user', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     const userId = user._id;
+    
     
     if (!user) {
         return res.send({ error: "User Not Found" });
@@ -64,10 +96,57 @@ app.post('/login-user', async (req, res) => {
     if (passwordMatch) {
         // console.log(passwordMatch)
         const token = jwt.sign({userId}, JWT_SECRET);
-        return res.status(201).json({status: "ok"});
+        return res.status(201).json({status: "ok",userId});
     }
 
     res.json({ status: 'error', error: 'Invalid Password' });
 });
 
 
+
+
+// get userby id
+app.get('/user/:id', async (req, res) => {
+  try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      return res.json(user);
+  } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+// getboardbyid
+app.get('/boards/:id',async (req, res) => {
+  try {
+    const board = await Board.findById(req.params.id);
+    if (!board) {
+        return res.status(404).json({ message: 'Board not found' });
+    }
+    return res.json(board);
+} catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server Error' });
+}
+});
+
+//get boards of a userby userid
+
+app.get('/user/:id/getboards',async (req, res) => {
+  try {
+    // const board = await Board.findById(req.params.id);
+    const user=await User.findById(req.params.id);
+    if (!user) {
+        return res.status(404).json({ message: 'user not found' });
+    }
+
+    return res.json(user.boards);
+} catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server Error' });
+}
+});
