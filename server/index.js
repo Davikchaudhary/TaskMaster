@@ -139,7 +139,7 @@ app.get('/boards/:id',async (req, res) => {
 app.get('/user/:id/getboards',async (req, res) => {
   try {
     // const board = await Board.findById(req.params.id);
-    const user=await User.findById(req.params.id);
+    const user=await User.findById(req.params.id).populate('boards');
     if (!user) {
         return res.status(404).json({ message: 'user not found' });
     }
@@ -150,3 +150,4 @@ app.get('/user/:id/getboards',async (req, res) => {
     return res.status(500).json({ message: 'Server Error' });
 }
 });
+
