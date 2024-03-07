@@ -71,6 +71,38 @@ app.post('/login-user', async (req, res) => {
 
 
 
+
+
+// Get user details by ID
+app.get('/user/:id', async (req, res) => {
+    try {
+        const user = await UserDetails.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.json(user);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// Update user details by ID
+app.put('/user/:id', async (req, res) => {
+    try {
+        const { uname, email } = req.body;
+        const user = await UserDetails.findByIdAndUpdate(req.params.id, { uname, email }, { new: true });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.json(user);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+
 require("./board");
 const Board=mongoose.model("Board");
 
