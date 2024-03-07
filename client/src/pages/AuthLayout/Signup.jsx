@@ -38,7 +38,7 @@ const Signup = () => {
                     email: "",
                     password: "",
                 });
-                navigate("/login");
+                navigate("/");
             } else {
                 setMessage("Registration failed. Please try again later.");
                 

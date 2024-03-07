@@ -5,13 +5,14 @@ import Home from './pages/AppLayout/Home';
 
 
 function App() {
+  const loggedIn = localStorage.getItem('loggedIn');
+  console.log(loggedIn);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path='/home' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path='/' element={loggedIn ? <Home /> : <Login />} />
+        <Route path='/login' element={<Login />}/>
+        <Route path="/signup" element={<Signup />}/>
       </Routes>
     </BrowserRouter>
   );
