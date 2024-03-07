@@ -22,7 +22,7 @@ const Navbar = ({handleHamburger}) => {
   }
 
   return (
-    <nav className=" fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-sky-800 dark:border-sky-800">
+    <nav className=" fixed top-0 z-50 w-full bg-sky-800 border-b border-sky-800 dark:bg-sky-800 dark:border-sky-800">
       <div className="px-4 py-3 lg:px-6 lg:pl-4 flex items-center justify-between">
         <div className="flex items-center justify-start">
           <button
@@ -44,7 +44,7 @@ const Navbar = ({handleHamburger}) => {
             </svg>
           </button>
           <div className="flex items-center ms-2 md:me-24">
-            <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-violet-300">
+            <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-violet-300 dark:text-violet-300">
               TaskMaster
             </span>
           </div>
@@ -56,7 +56,7 @@ const Navbar = ({handleHamburger}) => {
               <button
                 onClick={handleUserdetails}
                 type="button"
-                className="flex text-sm p-1 rounded-md focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm p-1 rounded-md focus:ring-4 bg-sky-400 dark:bg-sky-400 hover:bg-gray-700 dark:hover:bg-gray-700 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
