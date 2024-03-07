@@ -32,6 +32,7 @@ const Login = () => {
                 window.localStorage.setItem("loggedIn", true);
                 window.loggedIn = true;
                 navigate("/");
+                window.location.reload();
             }
         })
         
