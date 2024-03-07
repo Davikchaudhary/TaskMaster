@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Tasks from '../../components/Tasks';
 import axios from 'axios';
+import {Redirect, useNavigate} from 'react-router-dom'
 
 const Home = () => {
 
@@ -10,11 +11,10 @@ const Home = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(()=>{
-    axios.get("http://localhost/5000/login-user"),{
-      uname,
-      email,
-    }
+    axios.get("http://localhost/5000/user/:id")
     .then((response)=>{
       console.log(response)
       if(response.data.status==='ok'){
@@ -24,7 +24,7 @@ const Home = () => {
       }
       else {
         setIsLoggedIn(false);
-        NavigationPreloadManager('/login')
+        navigate('/login');
       }
     })
     .catch((error) => {
@@ -33,6 +33,10 @@ const Home = () => {
   });
 
   },[])
+
+  if (!isLoggedIn) {
+    <Redirect to="/login"/>
+  }
   
   return (
     <>
