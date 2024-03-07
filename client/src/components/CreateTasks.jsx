@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
 
 const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
-  // Initialize form state with taskToEdit details if provided
-  const [formData, setFormData] = useState({
-    name: taskToEdit ? taskToEdit.name : '',
-    priority: taskToEdit ? taskToEdit.priority : '',
-    description: taskToEdit ? taskToEdit.description : ''
-  });
-
-  // Handle changes to form fields
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const newTask = {
-      name: formData.name,
-      priority: formData.priority,
-      description: formData.description
+    // Initialize form state with taskToEdit details if provided
+    const [formData, setFormData] = useState({
+      name: taskToEdit ? taskToEdit.name : '',
+      priority: taskToEdit ? taskToEdit.priority : '',
+      description: taskToEdit ? taskToEdit.description : ''
+    });
+  
+    // Handle changes to form fields
+    const handleChange = (event) => {
+      const { name, value } = event.target;
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
     };
-    addTask(columnId, newTask);
-    onClose();
-  };
+  
+    // Handle form submission
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      const newTask = {
+        name: formData.name,
+        priority: formData.priority,
+        description: formData.description
+      };
+      addTask(columnId, newTask);
+      onClose();
+    };
 
   return (
     <div id="crud-modal" className={`fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}>
