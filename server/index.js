@@ -73,7 +73,7 @@ app.post('/login-user', async (req, res) => {
 // Get user details by ID
 app.get('/user/:id', async (req, res) => {
     try {
-        const user = await UserDetails.findById(req.params.id);
+        const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -88,7 +88,7 @@ app.get('/user/:id', async (req, res) => {
 app.put('/user/:id', async (req, res) => {
     try {
         const { uname, email } = req.body;
-        const user = await UserDetails.findByIdAndUpdate(req.params.id, { uname, email }, { new: true });
+        const user = await User.findByIdAndUpdate(req.params.id, { uname, email }, { new: true });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
