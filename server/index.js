@@ -70,6 +70,14 @@ app.post('/login-user', async (req, res) => {
 });
 
 
+
+//get all users
+app.get('/users', (req, res) => {
+    User.find()
+      .then(users => res.json(users))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
 // Get user details by ID
 app.get('/user/:id', async (req, res) => {
     try {
