@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import axios from 'axios'
 import API from '../../axios';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
@@ -13,10 +13,16 @@ const Home = () => {
   const [userDetail , setUserDetail] = useState({});
   const [error, setError] = useState("");
 
+  const userId =localStorage.getItem('userId');
+  
   const getUserDetail = async () => {
+    
     try {
-      const res = await API.get(`/user/id`);
+      const res = await axios.get(`http://localhost:5000/user/${userId}`);
+      
       console.log(res.data)
+
+      
       setUserDetail(res.data)
     } catch (error) {
       setError(error.message);
@@ -26,10 +32,6 @@ const Home = () => {
   useEffect(()=>{
     getUserDetail();
   },[])
-
-  console.log("error", error);
-console.log("user Details", userDetail)
-
 
   const handleHamburger = () => {
     setOpenHamburger(prevState => !prevState);
@@ -46,7 +48,7 @@ console.log("user Details", userDetail)
 
   return (
     <>
-      <Navbar handleHamburger={handleHamburger}/>
+      <Navbar handleHamburger={handleHamburger} userDetail={userDetail}/>
       <Sidebar  openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards}/>
       <Boards />
       {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal}  />}

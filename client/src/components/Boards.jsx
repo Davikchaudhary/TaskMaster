@@ -143,7 +143,7 @@ const Boards = () => {
                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                           <div className={`flex flex-col w-full p-2 mt-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}>
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">{task.name}</h5>
-                            <p className="font-normal text-gray-700 dark:text-gray-900">{task.description}</p>
+                            <p className="font-normal  text-gray-700 dark:text-gray-900">{task.description}</p>
                             <div className='space-x-5 text-end'>
                               <button onClick={() => editTask('backlog', index, { name: 'Updated Task', description: 'Updated Description', priority: 'bg-orange-300' })}>Edit Task</button>
                               <button onClick={() => deleteTask('backlog', index)}>Delete Task</button>

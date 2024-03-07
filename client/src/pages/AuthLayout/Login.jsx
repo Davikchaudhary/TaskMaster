@@ -28,6 +28,11 @@ const Login = () => {
         .then((response) => {
             console.log(response.data, "userRegister");
             if (response.data.status === "ok") {
+
+                const { userId } = response.data; // Extract userId from the response
+                window.localStorage.setItem('userId', userId);
+              
+
                 window.localStorage.setItem("token", response.data.token); 
                 window.localStorage.setItem("loggedIn", true);
                 // window.loggedIn = true;

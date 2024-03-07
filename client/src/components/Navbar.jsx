@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom'
 
 
-const Navbar = ({handleHamburger}) => {
+const Navbar = ({handleHamburger, userDetail}) => {
 
   const navigate = useNavigate();
   
@@ -56,12 +56,15 @@ const Navbar = ({handleHamburger}) => {
               <button
                 onClick={handleUserdetails}
                 type="button"
-                className="flex text-sm p-1 rounded-md focus:ring-4 bg-sky-400 dark:bg-sky-400 hover:bg-gray-700 dark:hover:bg-gray-700 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm p-1 rounded-full focus:ring-4 bg-sky-400 dark:bg-sky-400 hover:bg-gray-700 dark:hover:bg-gray-700 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
+            
                 <span className="sr-only">Open user menu</span>
-                <span className="text-white  font-medium">USER</span>
+                <div className='h-4 w-4 '>
+
+                </div>
               </button>
             </div>
             <div className={`${openUserDetails ? 'block' : 'hidden'} z-50 absolute my-4 -mx-10 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
@@ -69,10 +72,10 @@ const Navbar = ({handleHamburger}) => {
             >
               <div className="px-4 py-3" role="none">
                 <p className="text-sm text-gray-900 dark:text-white" role="none">
-                  Username
+                  {userDetail.uname}
                 </p>
                 <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                  Email
+                  {userDetail.email}
                 </p>
                 <button onClick={handleLogOut} className='text-sm font-medium text-red-500 truncate dark:text-red-500'>Log Out</button>
               </div>
