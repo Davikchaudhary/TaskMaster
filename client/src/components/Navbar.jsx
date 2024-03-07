@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 
 
 const Navbar = ({handleHamburger}) => {
+
+  const navigate = useNavigate();
   
   const [openUserDetails, setOpenUserDetails] = useState(false)
+
+  const [logout, setLogOut] = useState(false);
+
+  const handleLogOut = () => {
+    setLogOut(true)
+    navigate('/login')
+  }
 
   const handleUserdetails = () => {
     setOpenUserDetails(p => !p);
@@ -37,7 +47,7 @@ const Navbar = ({handleHamburger}) => {
             </span>
           </div>
         </div>
-
+        
         <div className="flex items-center">
           <div className={`flex items-center ms-3 sm:block`}>
             <div>
@@ -62,6 +72,7 @@ const Navbar = ({handleHamburger}) => {
                 <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                   Email
                 </p>
+                <button onClick={handleLogOut} >Log Out</button>
               </div>
             </div>
           </div>

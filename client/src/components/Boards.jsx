@@ -67,8 +67,8 @@ const Boards = () => {
             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">Task Name</h5>
             <p className="font-normal text-gray-700 dark:text-gray-900">Task Description</p>
             <div className='space-x-5 text-end'>
-            <button>Edit Task</button>
-            <button>Delete Task</button>
+            <button >Edit Task</button>
+            <button >Delete Task</button>
             </div>
           </div>
           
