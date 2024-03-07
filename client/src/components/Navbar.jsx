@@ -74,7 +74,7 @@ const Navbar = ({handleHamburger}) => {
                 <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                   Email
                 </p>
-                <button onClick={handleLogOut} >Log Out</button>
+                <button onClick={handleLogOut} className='text-sm font-medium text-red-500 truncate dark:text-red-500'>Log Out</button>
               </div>
             </div>
           </div>
