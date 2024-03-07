@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import crossIcon from "../assets/icon-cross.svg";
-import boardsSlice from "../redux/boardsSlice";
+import boardsSlice, {addBoard,editBoard} from "../redux/boardsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 
-function AddEditBoardModal({ setIsBoardModalOpen, type , }) {
+
+function AddEditBoardModal({ setIsBoardModalOpen, type }) {
   const dispatch = useDispatch();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [name, setName] = useState("");
@@ -13,11 +14,10 @@ function AddEditBoardModal({ setIsBoardModalOpen, type , }) {
     { name: "Doing", tasks: [], id: uuidv4() },
   ]);
   const [isValid, setIsValid] = useState(true);
-  const board = useSelector((state) => state.boards).find(
-    (board) => board.isActive
-  );
+  const boardState = useSelector((state) => state.boards);
+  const board = Object.values(boardState).find((board) => board && board.isActive);
 
-  if (type === "edit" && isFirstLoad) {
+  if (type === "edit" && isFirstLoad && board) {
     setNewColumns(
       board.columns.map((col) => {
         return { ...col, id: uuidv4() };
@@ -32,7 +32,7 @@ function AddEditBoardModal({ setIsBoardModalOpen, type , }) {
     if (!name.trim()) {
       return false;
     }
-    for (let i = 0 ; i < newColumns.length ; i++) {
+    for (let i = 0; i < newColumns.length; i++) {
       if (!newColumns[i].name.trim()) {
         return false;
       }
@@ -57,9 +57,9 @@ function AddEditBoardModal({ setIsBoardModalOpen, type , }) {
   const onSubmit = (type) => {
     setIsBoardModalOpen(false);
     if (type === "add") {
-      dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
+      dispatch(addBoard({ name, newColumns }));
     } else {
-      dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
+      dispatch(editBoard({ name, newColumns }));
     }
   };
 
