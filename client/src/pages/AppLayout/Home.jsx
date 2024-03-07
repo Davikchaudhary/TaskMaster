@@ -3,39 +3,36 @@ import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Tasks from '../../components/Tasks';
 import axios from 'axios';
-import {Redirect, useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'; // useNavigate for React Router v6
 
 const Home = () => {
-
+  const navigate = useNavigate(); // useNavigate hook for navigation
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [userData, setUserData] = useState(null);
 
-  const navigate = useNavigate();
-
-  useEffect(()=>{
-    axios.get("http://localhost/5000/user/:id")
-    .then((response)=>{
-      console.log(response)
-      if(response.data.status==='ok'){
-        setIsLoggedIn(true);
-        setUsername(response.data.uname);
-        setEmail(response.data.email);
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      try {
+        const response = await axios.get("/api/authenticate");
+        if (response.data) {
+          setIsLoggedIn(true);
+          setUserData(response.data);
+        } else {
+          setIsLoggedIn(false);
+          navigate('/login'); // Navigate to the login page
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again later.");
       }
-      else {
-        setIsLoggedIn(false);
-        navigate('/login');
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      alert("An error occurred. Please try again later.");
-  });
+    };
 
-  },[])
+    checkLoggedIn();
+  }, [navigate]);
 
   if (!isLoggedIn) {
-    <Redirect to="/login"/>
+    // Redirect to login page if not logged in
+    return null; // or you can return <Navigate to="/login" /> if you're using React Router
   }
   
   return (
