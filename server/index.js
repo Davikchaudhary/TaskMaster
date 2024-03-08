@@ -193,3 +193,29 @@ app.post('/user/:id/addboards', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+//get board by boardname
+app.get('/user/:userId/board/:boardName', async (req, res) => {
+  const { userId, boardName } = req.params;
+
+  try {
+    // Find the UserInfo document by userId and populate the 'boards' field
+    const user = await User.findById(userId).populate('boards');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find the board with the specified boardName in the user's boards array
+    const board = user.boards.find((board) => board.name === boardName);
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    res.status(200).json(board);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
