@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import closepic from '../assets/images/close.svg'
+import editpic from '../assets/images/edit.svg'
 
 const Sidebar = ({ openHamburger, handleAddBoard, createdBoards }) => {
   const [showBoards, setShowBoards] = useState(false);
@@ -58,13 +60,20 @@ const Sidebar = ({ openHamburger, handleAddBoard, createdBoards }) => {
         </ul>
       
 {showBoards && (
-  <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
+  <div className=" px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
     <ul className="space-y-2 mt-2 font-medium">
       {createdBoards.map((board, index) => (
         <li key={index}>
+          <div className='flex'>
+
           <button className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
             {board.name} {/* Render the board name */}
           </button>
+          <div className='flex'>
+          <button><img className='h-10 w-10' src={editpic}/></button>
+          <button><img className='h-10 w-10' src={closepic}/></button>
+          </div>
+          </div>
         </li>
       ))}
     </ul>
