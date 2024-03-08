@@ -86,6 +86,11 @@ const taskSchema = new mongoose.Schema({
     enum: ['todo', 'backlog', 'inProgress', 'completed'],
     default: 'todo',
   },
+  assignee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to user document
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
@@ -114,9 +119,14 @@ const boardSchema = new mongoose.Schema({
     required: true,
   },
   createdBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to user document
     required: true,
   },
+  collaborators: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to user document
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
