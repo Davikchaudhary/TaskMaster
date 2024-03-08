@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import closepic from '../assets/images/close.svg';
 import editpic from '../assets/images/edit.svg';
+import React, { useState } from 'react';
 
 const Sidebar = ({ openHamburger, handleAddBoard, createdBoards, setSelectedBoard }) => {
   const [showBoards, setShowBoards] = useState(false);
