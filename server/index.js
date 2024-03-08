@@ -219,3 +219,6 @@ app.get('/user/:userId/board/:boardName', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+
