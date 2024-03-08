@@ -29,6 +29,7 @@ const Login = () => {
             console.log(response.data, "userRegister");
             if (response.data.status === "ok") {
                 window.localStorage.setItem("token", response.data.token); 
+                window.localStorage.setItem("userId", response.data.userId); 
                 window.localStorage.setItem("loggedIn", true);
                 // window.loggedIn = true;
                 navigate("/");

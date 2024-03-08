@@ -15,12 +15,8 @@ const Home = () => {
   const userId = localStorage.getItem('userId');
 
   const getUserDetail = async () => {
-
     try {
       const res = await API.get(`/user/${userId}`);
-
-      console.log(res.data)
-
       setUserDetail(res.data)
     } catch (error) {
       setError(error.message);
@@ -45,7 +41,6 @@ const Home = () => {
     setOpenHamburger(prevState => !prevState);
   };
 
-
   const handleAddBoard = () => {
     setOpenCreateBoards(true);
   };
@@ -55,13 +50,17 @@ const Home = () => {
     getBoards(); // Fetch updated boards when a new board is created
   };
 
+  // Function to update boards after creation
+  const updateBoards = () => {
+    getBoards();
+  };
 
   return (
     <>
       <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
       <Sidebar openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards} />
       <Boards />
-      {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal} />}
+      {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal} updateBoards={updateBoards} />}
     </>
   );
 };
