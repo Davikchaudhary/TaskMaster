@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import closepic from '../assets/images/close.svg'
-import editpic from '../assets/images/edit.svg'
+import closepic from '../assets/images/close.svg';
+import editpic from '../assets/images/edit.svg';
 
-const Sidebar = ({ openHamburger, handleAddBoard, createdBoards }) => {
+const Sidebar = ({ openHamburger, handleAddBoard, createdBoards, setSelectedBoard }) => {
   const [showBoards, setShowBoards] = useState(false);
 
   const toggleShowBoards = () => {
@@ -14,7 +14,7 @@ const Sidebar = ({ openHamburger, handleAddBoard, createdBoards }) => {
       id="logo-sidebar"
       className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
         openHamburger ? 'translate-x-0' : '-translate-x-full'
-      } bg-sky-800  border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
+      } bg-sky-800 border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
       aria-label="Sidebar"
     >
       <div className="h-full px-3 pb-4 overflow-y-auto bg-sky-800 dark:bg-sky-800">
@@ -58,28 +58,29 @@ const Sidebar = ({ openHamburger, handleAddBoard, createdBoards }) => {
             </button>
           </li>
         </ul>
-      
-{showBoards && (
-  <div className=" px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
-    <ul className="space-y-2 mt-2 font-medium">
-      {createdBoards.map((board, index) => (
-        <li key={index}>
-          <div className='flex'>
-
-          <button className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            {board.name} {/* Render the board name */}
-          </button>
-          <div className='flex'>
-          <button><img className='h-10 w-10' src={editpic}/></button>
-          <button><img className='h-10 w-10' src={closepic}/></button>
+        
+        {showBoards && (
+          <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
+            <ul className="space-y-2 mt-2 font-medium">
+              {createdBoards.map((board, index) => (
+                <li key={index}>
+                  <div className='flex'>
+                    <button 
+                      className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                      onClick={() => setSelectedBoard(board)} // Add onClick to set the selected board
+                    >
+                      {board.name}
+                    </button>
+                    <div className='flex'>
+                      <button><img className='h-10 w-10' src={editpic}/></button>
+                      <button><img className='h-10 w-10' src={closepic}/></button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
+        )}
 
       </div>
     </aside>

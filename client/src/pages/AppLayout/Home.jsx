@@ -1,3 +1,5 @@
+// Home.js
+
 import React, { useEffect, useState } from 'react';
 import API from '../../axios';
 import Navbar from '../../components/Navbar';
@@ -9,6 +11,7 @@ const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
   const [openCreateBoards, setOpenCreateBoards] = useState(false);
   const [createdBoards, setCreatedBoards] = useState([]);
+  const [selectedBoard, setSelectedBoard] = useState(null); // State to store selected board details
   const [userDetail, setUserDetail] = useState({});
   const [error, setError] = useState("");
 
@@ -50,6 +53,10 @@ const Home = () => {
     getBoards(); // Fetch updated boards when a new board is created
   };
 
+  const selectBoard = (board) => {
+    setSelectedBoard(board); // Set selected board details to state
+  };
+
   // Function to update boards after creation
   const updateBoards = () => {
     getBoards();
@@ -58,8 +65,8 @@ const Home = () => {
   return (
     <>
       <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
-      <Sidebar openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards} />
-      <Boards />
+      <Sidebar openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards} setSelectedBoard={selectBoard} />
+      <Boards selectedBoard={selectedBoard} /> {/* Pass selected board details to Boards component */}
       {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal} updateBoards={updateBoards} />}
     </>
   );

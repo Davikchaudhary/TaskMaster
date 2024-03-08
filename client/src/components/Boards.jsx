@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import CreateTasks from './CreateTasks';
+import API from '../axios';
 
-const Boards = () => {
+const Boards = ({ selectedBoard }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState({
     todo: [],
@@ -11,6 +12,24 @@ const Boards = () => {
     completed: []
   });
   const [columnId, setColumnId] = useState('');
+  const [createdByUname, setCreatedByUname] = useState('');
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+          const res = await API.get(`/user/${userId}`);
+          setCreatedByUname(res.data.uname); // Assuming 'uname' is the field containing the username
+        }
+      } catch (error) {
+        console.error('Error fetching username:', error);
+      }
+    };
+
+    fetchUsername();
+  }, []);
+
 
   const handleOpenModal = (columnId) => {
     setIsModalOpen(true);
@@ -27,6 +46,7 @@ const Boards = () => {
       return updatedTasks;
     });
   };
+
 
   const editTask = (columnId, taskIndex, updatedTask) => {
     setTasks((prevTasks) => {
@@ -59,17 +79,19 @@ const Boards = () => {
     updatedTasks[destination.droppableId].splice(destination.index, 0, movedTask);
     setTasks(updatedTasks);
   };
+  
 
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="p-4 mt-20 sm:ml-64">
+          {selectedBoard && (
           <div className="flex flex-col">
-            <h2 className="mb-4 text-2xl text-center p-2 font-bold">Board Name</h2>
+            <h2 className="mb-4 text-2xl text-center p-2 font-bold">{selectedBoard.name}</h2>
             <div className="flex justify-between">
-              <h3 className="text-right">Created on: date time</h3>
-              <h3 className="text-right">Created by: Username</h3>
-              <h3 className="text-right">last modified on: date time</h3>
+              <h3 className="text-right">Created on: {selectedBoard.createdAt}</h3>
+              <h3 className="text-right">Created by: {createdByUname}</h3>
+              <h3 className="text-right">last modified on: {selectedBoard.lastModifiedAt}</h3>
             </div>
             <div className="flex justify-around">
               <h3 className="text-right bg-rose-300 p-1 rounded-xl text-black font-semibold">Immediate</h3>
@@ -78,6 +100,7 @@ const Boards = () => {
               <h3 className="text-right bg-green-300 p-1 rounded-xl text-black font-semibold">Low</h3>
             </div>
           </div>
+          )}
 
           <div className='flex mt-2 flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10'>
             {/* Todo Column */}

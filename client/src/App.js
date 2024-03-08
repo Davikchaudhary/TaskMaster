@@ -6,7 +6,6 @@ import Home from './pages/AppLayout/Home';
 
 function App() {
   const loggedIn = localStorage.getItem('loggedIn');
-  console.log(loggedIn);
   return (
     <BrowserRouter>
       <Routes>
