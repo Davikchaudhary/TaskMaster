@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
+import API from '../axios';
 
-const CreateBoards = ({ handleCloseModal }) => {
+const CreateBoards = ({ handleCloseModal, updateBoards }) => {
   const [closeBoard, setCloseBoard] = useState(true);
+  const [boardName, setBoardName] = useState('');
+  const userId = localStorage.getItem('userId');
+
+  const handleChange = (e) => {
+    setBoardName(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Post the new board data to the server
+      await API.post(`/user/${userId}/addboards`, { name: boardName });
+      // Close the modal
+      handleCloseModal();
+      // Update the list of boards
+      updateBoards();
+    } catch (error) {
+      console.error('Error creating board:', error);
+    }
+  };
 
   const handleCloseBoard = () => {
     setCloseBoard(prevState => !prevState);
@@ -32,7 +53,7 @@ const CreateBoards = ({ handleCloseModal }) => {
             </svg>
           </button>
         </div>
-        <form className="p-4">
+        <form className="p-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div className='col col-span-2'>
             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -42,6 +63,7 @@ const CreateBoards = ({ handleCloseModal }) => {
                   type="text"
                   id="name"
                   name="name"
+                  onChange={handleChange}
                   className="bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Type Board name..."
                   required

@@ -30,6 +30,7 @@ const Login = () => {
             if (response.data.status === "ok") {
                 localStorage.setItem("userId",response.data.userId);
                 window.localStorage.setItem("token", response.data.token); 
+                window.localStorage.setItem("userId", response.data.userId); 
                 window.localStorage.setItem("loggedIn", true);
                 // window.loggedIn = true;
                 navigate("/");

@@ -16,6 +16,7 @@ const Navbar = ({handleHamburger, userDetail}) => {
     // localStorage.removeItem('loggedIn');
     localStorage.removeItem('userId');
     localStorage.setItem('loggedIn', false);
+    localStorage.removeItem('userId');
     navigate('/login')
   }
 
