@@ -164,8 +164,14 @@ app.post('/user/:id/addboards', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+    const existingBoard = await Board.findOne({ name });
+
+    if (existingBoard) {
+      return res.status(400).json({ error: 'Board name must be unique' });
+    }
 
     // Create default columns for the new board
+
     const columns = {
       todo: [],
       backlog: [],
