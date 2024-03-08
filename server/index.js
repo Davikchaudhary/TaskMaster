@@ -228,3 +228,88 @@ app.get('/user/:userId/board/:boardName', async (req, res) => {
 
 
 
+// app.put('/user/:userId/board/:boardName', async (req, res) => {
+//   const { userId, boardName } = req.params;
+//   const { newName } = req.body;
+
+//   try {
+//     // Find the board by boardName and createdBy (userId)
+//     const board = await Board.findOne({ name: boardName, createdBy: userId });
+
+//     if (!board) {
+//       return res.status(404).json({ error: 'Board not found for the user' });
+//     }
+
+//     // Check if the new name is the same as the existing name
+//     if (newName === board.name) {
+//       return res.status(400).json({ error: 'New board name must be different from the current name' });
+//     }
+
+//     // Check if the new name is already used by another board for the same user
+//     const existingBoard = await Board.findOne({ name: newName, createdBy: userId });
+
+//     if (existingBoard) {
+//       return res.status(400).json({ error: 'Board name must be unique for the user' });
+//     }
+
+//     // Update the board name
+//     board.name = newName;
+//     board.lastModifiedAt = new Date();
+
+//     // Save the updated board
+//     await board.save();
+
+//     res.status(200).json({ message: 'Board updated successfully', updatedBoard: board });
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// });
+
+// PUT update a board by userId and boardName
+app.put('/user/:userId/board/:boardName', async (req, res) => {
+  const { userId, boardName } = req.params;
+  const { newName } = req.body;
+
+  console.log('Updating board:', userId, boardName);
+
+  try {
+    // Find the board by boardName and createdBy (userId)
+    const board = await Board.findOne({ name: boardName, createdBy: userId });
+
+    if (!board) {
+      console.log('Board not found for user:', userId, boardName);
+      return res.status(404).json({ error: 'Board not found for the user' });
+    }
+
+    // Check if the new name is the same as the existing name
+    if (newName === board.name) {
+      console.log('New name is the same as existing name');
+      return res.status(400).json({ error: 'New board name must be different from the current name' });
+    }
+
+    // Check if the new name is already used by another board for the same user
+    const existingBoard = await Board.findOne({ name: newName, createdBy: userId });
+
+    if (existingBoard) {
+      console.log('New name is already used for another board');
+      return res.status(400).json({ error: 'Board name must be unique for the user' });
+    }
+
+    // Update the board name
+    board.name = newName;
+    board.lastModifiedAt = new Date();
+
+    // Save the updated board
+    await board.save();
+
+    console.log('Board updated successfully:', board);
+    res.status(200).json({ message: 'Board updated successfully', updatedBoard: board });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
