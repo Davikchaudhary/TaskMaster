@@ -32,6 +32,7 @@ const User = mongoose.model("UserInfo");
 
 require("./board.js");
 const Board=mongoose.model("Board");
+const Task=mongoose.model("Task");
 
 
 
@@ -151,3 +152,44 @@ app.get('/user/:id/getboards',async (req, res) => {
 }
 });
 
+
+// creating board api
+app.post('/user/:id/addboards', async (req, res) => {
+  const { name } = req.body;
+  const userId = req.params.id;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Create default columns for the new board
+    const columns = {
+      todo: [],
+      backlog: [],
+      inProgress: [],
+      completed: [],
+    };
+
+    // Create a new board
+    const newBoard = await Board.create({
+      name,
+      createdBy: userId, // Assign the user ID as createdBy
+      columns,
+    });
+
+    // Save the new board
+    await newBoard.save();
+
+    // Add the new board's ID to the user's boards array
+    user.boards.push(newBoard._id);
+    await user.save();
+
+    res.status(201).json(newBoard);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
