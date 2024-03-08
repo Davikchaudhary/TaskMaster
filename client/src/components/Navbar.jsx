@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom'
+import userpic from '../assets/images/user.svg'
 
 
 const Navbar = ({handleHamburger, userDetail}) => {
@@ -56,15 +57,14 @@ const Navbar = ({handleHamburger, userDetail}) => {
               <button
                 onClick={handleUserdetails}
                 type="button"
-                className="flex text-sm p-1 rounded-full focus:ring-4 bg-sky-400 dark:bg-sky-400 hover:bg-gray-700 dark:hover:bg-gray-700 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm p-1 rounded-full focus:ring-4 bg-sky-800 dark:bg-sky-800 hover:bg-gray-700 dark:hover:bg-gray-700 focus:ring-gray-300 dark:focus:ring-gray-600"
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
+                <img className='h-6 w-6' src={userpic}/>
             
-                <span className="sr-only">Open user menu</span>
-                <div className='h-4 w-4 '>
-
-                </div>
+                
+                 
               </button>
             </div>
             <div className={`${openUserDetails ? 'block' : 'hidden'} z-50 absolute my-4 -mx-10 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'

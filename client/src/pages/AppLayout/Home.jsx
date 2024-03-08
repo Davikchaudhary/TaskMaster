@@ -12,8 +12,13 @@ const Home = () => {
   const [createdBoards, setCreatedBoards] = useState([]);
   const [userDetail , setUserDetail] = useState({});
   const [error, setError] = useState("");
+  
 
+
+  
   const userId =localStorage.getItem('userId');
+
+
   
   const getUserDetail = async () => {
     
@@ -33,6 +38,8 @@ const Home = () => {
     getUserDetail();
   },[])
 
+  console.log(userDetail.uname)
+
   const handleHamburger = () => {
     setOpenHamburger(prevState => !prevState);
   };
@@ -48,7 +55,7 @@ const Home = () => {
 
   return (
     <>
-      <Navbar handleHamburger={handleHamburger} userDetail={userDetail}/>
+      <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
       <Sidebar  openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards}/>
       <Boards />
       {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal}  />}
