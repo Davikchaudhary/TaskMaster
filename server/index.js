@@ -441,8 +441,6 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
 
 
 
-<<<<<<< HEAD
-
 // get all task of a board
 app.get('/board/:boardName/tasks', async (req, res) => {
   const { userId } = req.query;
@@ -474,5 +472,3 @@ app.get('/board/:boardName/tasks', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-=======
->>>>>>> 67f33c21911895da85fa402dece6f389e21b76b9
