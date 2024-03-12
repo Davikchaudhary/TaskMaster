@@ -135,6 +135,8 @@ app.get('/boards/:id',async (req, res) => {
 }
 });
 
+
+
 //get boards of a userby userid
 
 app.get('/user/:id/getboards',async (req, res) => {
@@ -511,3 +513,21 @@ app.get('/board/:boardName/tasks', async (req, res) => {
   }
 });
 
+
+// gettting single task by id
+app.get('/tasks/:taskId', async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.status(200).json({ task });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
