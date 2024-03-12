@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import closepic from "../assets/images/close.svg";
 import editpic from "../assets/images/edit.svg";
-import EditBoards from "./EditBoards"; // Import EditBoards component
+import API from "../axios"; // Import API functions
 
 const Sidebar = ({
   openHamburger,
@@ -12,28 +12,37 @@ const Sidebar = ({
   selectedBoard,
 }) => {
   const [showBoards, setShowBoards] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false); // State to manage EditBoards modal
-  const [editedBoardName, setEditedBoardName] = useState(""); // State to hold edited board name
 
   const toggleShowBoards = () => {
     setShowBoards((prevState) => !prevState);
   };
 
   const handleEditBoard = (board) => {
-    setSelectedBoard(board); // Set the selected board
-    setEditedBoardName(board.name); // Set the edited board name
-    setShowEditModal(true); // Open EditBoards modal when edit button is clicked
+    setSelectedBoard(board);
   };
 
+  const handleDeleteBoard = async (boardId) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      
+      // Make a DELETE request to delete the board
+      await API.delete(`/user/${userId}/board/${boardId}`);
+      
+      // Update the boards list after deletion
+      updateBoards();
+    } catch (error) {
+      console.error("Error deleting board:", error);
+    }
+  };
 
   return (
     <aside
-    id="logo-sidebar"
-    className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-      openHamburger ? "translate-x-0" : "-translate-x-full"
-    } bg-sky-800 border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
-    aria-label="Sidebar"
-  >
+      id="logo-sidebar"
+      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
+        openHamburger ? "translate-x-0" : "-translate-x-full"
+      } bg-sky-800 border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
+      aria-label="Sidebar"
+    >
       <div className="h-full px-3 pb-4 overflow-y-auto bg-sky-800 dark:bg-sky-800">
         <ul className="space-y-2 mt-2 font-medium">
           <li>
@@ -78,45 +87,32 @@ const Sidebar = ({
           </li>
         </ul>
         {showBoards && (
-        <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
-          <ul className="space-y-2 mt-2 font-medium">
-            {createdBoards.map((board, index) => (
-              <li key={index}>
-                <div className="flex">
-                  <button
-                    className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                    onClick={() => setSelectedBoard(board)}
-                  >
-                    {board.name}
-                  </button>
+          <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
+            <ul>
+              {createdBoards.map((board, index) => (
+                <li key={index}>
                   <div className="flex">
-                    <button>
-                      <img
-                        className="h-10 w-10"
-                        src={editpic}
-                        onClick={() => handleEditBoard(board)}
-                      />
+                    <button
+                      className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                      onClick={() => setSelectedBoard(board)}
+                    >
+                      {board.name}
                     </button>
-                    <button>
-                      <img className="h-10 w-10" src={closepic} />
-                    </button>
+                    <div className="flex">
+                      <button onClick={() => handleEditBoard(board)}>
+                        <img className="h-10 w-10" src={editpic} />
+                      </button>
+                      <button onClick={() => handleDeleteBoard(board._id)}>
+                        <img className="h-10 w-10" src={closepic} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
-      {showEditModal && (
-        <EditBoards
-          handleEditBoardClose={() => setShowEditModal(false)}
-          updateBoards={updateBoards}
-          selectedBoard={selectedBoard}
-          editedBoardName={editedBoardName} // Pass edited board name to EditBoards component
-          setEditedBoardName={setEditedBoardName} // Pass function to update edited board name
-        />
-      )}
     </aside>
   );
 };

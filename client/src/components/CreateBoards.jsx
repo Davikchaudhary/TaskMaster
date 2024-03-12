@@ -15,15 +15,15 @@ const CreateBoards = ({ handleCloseModal, updateBoards }) => {
     try {
       // Post the new board data to the server
       await API.post(`/user/${userId}/addboards`, { name: boardName });
-      // Close the modal
-      handleCloseModal();
       // Update the list of boards
       updateBoards();
+      // Close the modal
+      handleCloseModal();
     } catch (error) {
       console.error('Error creating board:', error);
     }
   };
-
+  
   const handleCloseBoard = () => {
     setCloseBoard(prevState => !prevState);
     handleCloseModal(); // Close the modal

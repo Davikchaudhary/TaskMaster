@@ -25,14 +25,14 @@ const EditBoards = ({
     e.preventDefault();
     try {
       const userId = localStorage.getItem("userId");
-      const boardId = selectedBoard.id; // Use board id instead of name
-      const newName = boardName;
-  
+      const boardId = selectedBoard.id;
+      const newName = boardName; // Use the updated board name from state
+
       // Make a PUT request to update the board name
-      const res = await API.put(`/user/${userId}/board/${boardId}`, {
+      const res = await API.put(`/user/${userId}/board/${boardName}`, {
         name: newName, // Send the new board name as part of the request body
       });
-  
+
       console.log("Board name updated successfully:", res.data);
       updateBoards(); // Update the boards list
       handleEditBoardClose(); // Close the modal after updating the board
@@ -40,7 +40,6 @@ const EditBoards = ({
       console.error("Error updating board name:", error);
     }
   };
-  
 
   const handleCloseBoard = () => {
     handleEditBoardClose(); // Close the modal

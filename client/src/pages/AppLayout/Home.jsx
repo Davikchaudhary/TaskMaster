@@ -48,6 +48,10 @@ const Home = () => {
     setOpenCreateBoards(true);
   };
 
+  const handleCreateBoardClose = () => {
+    setOpenCreateBoards(false); // Close the create board modal
+  };
+
   const handleEditBoard = () => {
     setOpenEditBoards(true);
   };
@@ -68,6 +72,7 @@ const Home = () => {
   // Function to update boards after creation
   const updateBoards = () => {
     getBoards();
+    handleCreateBoardClose(); // Close the create board modal after creating a board
   };
 
   return (

@@ -240,6 +240,10 @@ app.put('/user/:userId/board/:boardName', async (req, res) => {
   console.log('Updating board:', userId, boardName);
 
   try {
+    if (!newName) {
+      return res.status(400).json({ error: 'New board name is required' });
+    }
+
     // Find the board by boardName and createdBy (userId)
     const board = await Board.findOne({ name: boardName, createdBy: userId });
 
@@ -276,6 +280,7 @@ app.put('/user/:userId/board/:boardName', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 
 // DELETE a board by userId and boardName
