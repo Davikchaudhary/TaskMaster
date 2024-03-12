@@ -364,7 +364,7 @@ app.post('/board/:boardName/tasks', async (req, res) => {
 app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
   const { userId } = req.query;
   const { boardName, taskId } = req.params;
-  const { name, description, priority, status, column } = req.body;
+  const { name, description, priority, status } = req.body;
 
   try {
     // Find the board by name and user
@@ -374,8 +374,16 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
       return res.status(404).json({ error: 'Board not found' });
     }
 
-    // Check if the task exists in the board's tasks
-    if (!board.tasks.includes(taskId)) {
+    // Check if the task exists in any of the board's columns
+    let taskFound = false;
+    for (const col of Object.keys(board.columns)) {
+      if (board.columns[col].includes(taskId)) {
+        taskFound = true;
+        break;
+      }
+    }
+
+    if (!taskFound) {
       return res.status(404).json({ error: 'Task not found for the board' });
     }
 
@@ -386,11 +394,19 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
       { new: true }
     );
 
+    // Remove the task from its current column
+    for (const col of Object.keys(board.columns)) {
+      const index = board.columns[col].indexOf(taskId);
+      if (index > -1) {
+        board.columns[col].splice(index, 1);
+        break;
+      }
+    }
+
     // Update the task's column in the board
-    const updatedColumn = board.columns[column];
-    const index = updatedColumn.findIndex((task) => task._id.equals(taskId));
-    updatedColumn.splice(index, 1, updatedTask);
-    board.markModified(`columns.${column}`);
+    if (board.columns[status]) {
+      board.columns[status].push(updatedTask._id);
+    }
 
     // Save the updated board
     await board.save();
@@ -402,6 +418,8 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
 
 
 
