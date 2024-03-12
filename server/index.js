@@ -193,7 +193,7 @@ app.post('/user/:id/addboards', async (req, res) => {
     user.boards.push(newBoard._id);
     await user.save();
 
-    res.status(201).json(newBoard);
+    res.status(201).json(newBoard,newBoard._id);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -309,3 +309,129 @@ app.delete('/user/:userId/board/:boardName', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+<<<<<<< HEAD
+=======
+
+
+
+//Post the task
+const moment = require('moment');
+
+app.post('/board/:boardName/tasks', async (req, res) => {
+  const { userId } = req.query;
+  const { boardName } = req.params;
+  const { name, description, column, title, priority } = req.body;
+
+  try {
+    // Find the board by name and user
+    const board = await Board.findOne({ name: boardName, createdBy: userId });
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    // Create a new task with formatted createdAt date
+    const newTask = new Task({
+      name,
+      description,
+      board: board._id,
+      title,
+      priority,
+      createdAt: moment().format('DD MMM YYYY'), // Format: "09 Mar 2024"
+    });
+
+    // Save the task
+    await newTask.save();
+
+    // Check if the specified column exists in the board
+    if (!board.columns[column]) {
+      return res.status(400).json({ error: 'Invalid column specified' });
+    }
+
+    // Add the task to the specified column
+    board.columns[column].push(newTask._id);
+
+    // Update lastModifiedAt timestamp
+    board.lastModifiedAt = moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+
+    // Save the updated board
+    await board.save();
+
+    console.log('Task created successfully:', newTask);
+    res.status(201).json({ message: 'Task created successfully', newTask });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// PUT update a task for a board
+app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
+  const { boardId, taskId } = req.params;
+  const { name, description } = req.body;
+
+  try {
+    // Check if the board exists
+    const board = await Board.findById(boardId);
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    // Check if the task exists in the board's tasks
+    if (!board.tasks.includes(taskId)) {
+      return res.status(404).json({ error: 'Task not found for the board' });
+    }
+
+    // Find and update the task
+    const updatedTask = await Task.findByIdAndUpdate(
+      taskId,
+      { name, description },
+      { new: true }
+    );
+
+    console.log('Task updated successfully:', updatedTask);
+    res.status(200).json({ message: 'Task updated successfully', updatedTask });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+// DELETE a task for a board
+ app.delete('/board/:boardId/tasks/:taskId', async (req, res) => {
+  const { boardId, taskId } = req.params;
+
+  try {
+    // Check if the board exists
+    const board = await Board.findById(boardId);
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    // Check if the task exists in the board's tasks
+    if (!board.tasks.includes(taskId)) {
+      return res.status(404).json({ error: 'Task not found for the board' });
+    }
+
+    // Remove the task from the board's tasks array
+    board.tasks = board.tasks.filter(task => task !== taskId);
+    await board.save();
+
+    // Delete the task
+    await Task.findByIdAndDelete(taskId);
+
+    console.log('Task deleted successfully');
+    res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+>>>>>>> 621278f4e5751e66138f3c81e23082185b358e0b
