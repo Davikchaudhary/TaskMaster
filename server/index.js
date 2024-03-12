@@ -268,7 +268,7 @@ app.put('/user/:userId/board/:boardName', async (req, res) => {
 
     // Update the board name
     board.name = newName;
-    board.lastModifiedAt = new Date();
+    board.lastModifiedAt = moment().format('DD MMM YYYY HH:mm:ss');
 
     // Save the updated board
     await board.save();
@@ -339,8 +339,8 @@ app.post('/board/:boardName/tasks', async (req, res) => {
       description,
       priority,
       status: column, // Set status same as column
-      createdAt: moment().format('DD MMM YYYY'),
-      updatedAt: moment().format('DD MMM YYYY'),
+      createdAt: moment().format('DD MMM YYYY HH:mm:ss'),
+      updatedAt: moment().format('DD MMM YYYY HH:mm:ss'),
     });
 
     // Save the task
@@ -400,6 +400,7 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
       { name, description, priority, status },
       { new: true }
     );
+    updatedTask.updatedAt=moment().format('DD MMM YYYY HH:mm:ss');
 
     // Remove the task from its current column
     for (const col of Object.keys(board.columns)) {
