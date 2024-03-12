@@ -135,6 +135,8 @@ app.get('/boards/:id',async (req, res) => {
 }
 });
 
+
+
 //get boards of a userby userid
 
 app.get('/user/:id/getboards',async (req, res) => {
@@ -364,7 +366,7 @@ app.post('/board/:boardName/tasks', async (req, res) => {
 app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
   const { userId } = req.query;
   const { boardName, taskId } = req.params;
-  const { name, description, priority, status, column } = req.body;
+  const { name, description, priority, status } = req.body;
 
   try {
     // Find the board by name and user
@@ -374,8 +376,16 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
       return res.status(404).json({ error: 'Board not found' });
     }
 
-    // Check if the task exists in the board's tasks
-    if (!board.tasks.includes(taskId)) {
+    // Check if the task exists in any of the board's columns
+    let taskFound = false;
+    for (const col of Object.keys(board.columns)) {
+      if (board.columns[col].includes(taskId)) {
+        taskFound = true;
+        break;
+      }
+    }
+
+    if (!taskFound) {
       return res.status(404).json({ error: 'Task not found for the board' });
     }
 
@@ -386,11 +396,19 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
       { new: true }
     );
 
+    // Remove the task from its current column
+    for (const col of Object.keys(board.columns)) {
+      const index = board.columns[col].indexOf(taskId);
+      if (index > -1) {
+        board.columns[col].splice(index, 1);
+        break;
+      }
+    }
+
     // Update the task's column in the board
-    const updatedColumn = board.columns[column];
-    const index = updatedColumn.findIndex((task) => task._id.equals(taskId));
-    updatedColumn.splice(index, 1, updatedTask);
-    board.markModified(`columns.${column}`);
+    if (board.columns[status]) {
+      board.columns[status].push(updatedTask._id);
+    }
 
     // Save the updated board
     await board.save();
@@ -407,29 +425,51 @@ app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
 
 
 
+
+
 // DELETE a task for a board
- app.delete('/board/:boardId/tasks/:taskId', async (req, res) => {
-  const { boardId, taskId } = req.params;
+ app.delete('/board/:boardName/tasks/:taskId', async (req, res) => {
+  const { userId } = req.query;
+  const { boardName, taskId } = req.params;
+  
 
   try {
-    // Check if the board exists
-    const board = await Board.findById(boardId);
+    // Find the board by name and user
+    const board = await Board.findOne({ name: boardName, createdBy: userId });
 
     if (!board) {
       return res.status(404).json({ error: 'Board not found' });
     }
 
-    // Check if the task exists in the board's tasks
-    if (!board.tasks.includes(taskId)) {
-      return res.status(404).json({ error: 'Task not found for the board' });
+    // Check if the task exists in any of the board's columns
+    let taskFound = false;
+    for (const col of Object.keys(board.columns)) {
+      if (board.columns[col].includes(taskId)) {
+        taskFound = true;
+        break;
+      }
     }
 
-    // Remove the task from the board's tasks array
-    board.tasks = board.tasks.filter(task => task !== taskId);
+    if (!taskFound) {
+      return res.status(404).json({ error: 'Task not found for the board' });
+    }
+    for (const col of Object.keys(board.columns)) {
+      const index = board.columns[col].indexOf(taskId);
+      if (index > -1) {
+        board.columns[col].splice(index, 1);
+        break;
+      }
+    }
+
+    await Task.findByIdAndDelete(taskId);
+
+    board.lastModifiedAt = moment().format('DD MMM YYYY HH:mm:ss');
+
+    // Save the updated board
     await board.save();
 
-    // Delete the task
-    await Task.findByIdAndDelete(taskId);
+
+  
 
     console.log('Task deleted successfully');
     res.status(200).json({ message: 'Task deleted successfully' });
@@ -467,6 +507,25 @@ app.get('/board/:boardName/tasks', async (req, res) => {
 
     console.log('All tasks for the board:', allTasks);
     res.status(200).json({ tasks: allTasks });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// gettting single task by id
+app.get('/tasks/:taskId', async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.status(200).json({ task });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });
