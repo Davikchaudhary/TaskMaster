@@ -66,6 +66,7 @@
 
 
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const taskSchema = new mongoose.Schema({
   title: {
@@ -87,12 +88,18 @@ const taskSchema = new mongoose.Schema({
     default: 'todo',
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String, // Change to String type
+    required: true,
+    default: () => {
+      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+    },
   },
   updatedAt: {
-    type: Date,
-    default: Date.now,
+    type: String, // Change to String type
+    required: true,
+    default: () => {
+      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+    },
   }
 },
   {
@@ -119,12 +126,18 @@ const boardSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String, // Change to String type
+    required: true,
+    default: () => {
+      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+    },
   },
   lastModifiedAt: {
-    type: Date,
-    default: Date.now,
+    type: String, // Change to String type
+    required: true,
+    default: () => {
+      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+    },
   },
   columns: {
     todo: [{

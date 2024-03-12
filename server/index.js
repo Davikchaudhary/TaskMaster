@@ -311,41 +311,57 @@ app.delete('/user/:userId/board/:boardName', async (req, res) => {
 });
 
 
-// POST create a new task for a board
-app.post('/board/:boardId/tasks', async (req, res) => {
-  const { boardId } = req.params;
-  const { name, description } = req.body;
+
+//Post the task
+const moment = require('moment');
+
+app.post('/board/:boardName/tasks', async (req, res) => {
+  const { userId } = req.query;
+  const { boardName } = req.params;
+  const { name, description, column, title, priority } = req.body;
 
   try {
-    // Check if the board exists
-    const board = await Board.findById(boardId);
+    // Find the board by name and user
+    const board = await Board.findOne({ name: boardName, createdBy: userId });
 
     if (!board) {
       return res.status(404).json({ error: 'Board not found' });
     }
 
-    // Create a new task
+    // Create a new task with formatted createdAt date
     const newTask = new Task({
       name,
       description,
-      board: boardId,
+      board: board._id,
+      title,
+      priority,
+      createdAt: moment().format('DD MMM YYYY'), // Format: "09 Mar 2024"
     });
 
     // Save the task
     await newTask.save();
 
-    // Add the task to the board's tasks array
-    board.tasks.push(newTask._id);
+    // Check if the specified column exists in the board
+    if (!board.columns[column]) {
+      return res.status(400).json({ error: 'Invalid column specified' });
+    }
+
+    // Add the task to the specified column
+    board.columns[column].push(newTask._id);
+
+    // Update lastModifiedAt timestamp
+    board.lastModifiedAt = moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+
+    // Save the updated board
     await board.save();
 
     console.log('Task created successfully:', newTask);
-    res.status(201).json({ message: 'Task created successfully'}, newTask,newTask._id);
+    res.status(201).json({ message: 'Task created successfully', newTask });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 
 // PUT update a task for a board
