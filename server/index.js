@@ -309,10 +309,6 @@ app.delete('/user/:userId/board/:boardName', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-<<<<<<< HEAD
-=======
-
-
 
 //Post the task
 const moment = require('moment');
@@ -434,4 +430,4 @@ app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
 });
 
 
->>>>>>> 621278f4e5751e66138f3c81e23082185b358e0b
+
