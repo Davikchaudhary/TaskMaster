@@ -318,7 +318,7 @@ const moment = require('moment');
 app.post('/board/:boardName/tasks', async (req, res) => {
   const { userId } = req.query;
   const { boardName } = req.params;
-  const { name, description, column, title, priority } = req.body;
+  const { title, description, priority, column } = req.body;
 
   try {
     // Find the board by name and user
@@ -328,29 +328,26 @@ app.post('/board/:boardName/tasks', async (req, res) => {
       return res.status(404).json({ error: 'Board not found' });
     }
 
-    // Create a new task with formatted createdAt date
+    // Create a new task with status same as column
     const newTask = new Task({
-      name,
-      description,
-      board: board._id,
       title,
+      description,
       priority,
-      createdAt: moment().format('DD MMM YYYY'), // Format: "09 Mar 2024"
+      status: column, // Set status same as column
+      createdAt: moment().format('DD MMM YYYY'),
+      updatedAt: moment().format('DD MMM YYYY'),
     });
 
     // Save the task
     await newTask.save();
 
-    // Check if the specified column exists in the board
-    if (!board.columns[column]) {
-      return res.status(400).json({ error: 'Invalid column specified' });
-    }
+    // Update the task's column in the board
+    const updatedColumn = board.columns[column];
+    updatedColumn.push(newTask._id);
+    board.markModified(`columns.${column}`);
 
-    // Add the task to the specified column
-    board.columns[column].push(newTask._id);
-
-    // Update lastModifiedAt timestamp
-    board.lastModifiedAt = moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+    // Update the board's lastModifiedAt
+    board.lastModifiedAt = moment().format('DD MMM YYYY');
 
     // Save the updated board
     await board.save();
@@ -364,14 +361,16 @@ app.post('/board/:boardName/tasks', async (req, res) => {
 });
 
 
+
 // PUT update a task for a board
-app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
-  const { boardId, taskId } = req.params;
-  const { name, description } = req.body;
+app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
+  const { userId } = req.query;
+  const { boardName, taskId } = req.params;
+  const { name, description, priority, status, column } = req.body;
 
   try {
-    // Check if the board exists
-    const board = await Board.findById(boardId);
+    // Find the board by name and user
+    const board = await Board.findOne({ name: boardName, createdBy: userId });
 
     if (!board) {
       return res.status(404).json({ error: 'Board not found' });
@@ -385,9 +384,18 @@ app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
     // Find and update the task
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
-      { name, description },
+      { name, description, priority, status },
       { new: true }
     );
+
+    // Update the task's column in the board
+    const updatedColumn = board.columns[column];
+    const index = updatedColumn.findIndex((task) => task._id.equals(taskId));
+    updatedColumn.splice(index, 1, updatedTask);
+    board.markModified(`columns.${column}`);
+
+    // Save the updated board
+    await board.save();
 
     console.log('Task updated successfully:', updatedTask);
     res.status(200).json({ message: 'Task updated successfully', updatedTask });
@@ -396,6 +404,8 @@ app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
 
 
 
@@ -432,3 +442,36 @@ app.put('/board/:boardId/tasks/:taskId', async (req, res) => {
 });
 
 
+
+
+// get all task of a board
+app.get('/board/:boardName/tasks', async (req, res) => {
+  const { userId } = req.query;
+  const { boardName } = req.params;
+
+  try {
+    // Find the board by name and user
+    const board = await Board.findOne({ name: boardName, createdBy: userId })
+      .populate('columns.todo')
+      .populate('columns.backlog')
+      .populate('columns.inProgress')
+      .populate('columns.completed');
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    const allTasks = [
+      ...board.columns.todo,
+      ...board.columns.backlog,
+      ...board.columns.inProgress,
+      ...board.columns.completed,
+    ];
+
+    console.log('All tasks for the board:', allTasks);
+    res.status(200).json({ tasks: allTasks });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
