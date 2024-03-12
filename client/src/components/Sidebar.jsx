@@ -1,22 +1,39 @@
-import closepic from '../assets/images/close.svg';
-import editpic from '../assets/images/edit.svg';
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import closepic from "../assets/images/close.svg";
+import editpic from "../assets/images/edit.svg";
+import EditBoards from "./EditBoards"; // Import EditBoards component
 
-const Sidebar = ({ openHamburger, handleAddBoard, createdBoards, setSelectedBoard }) => {
+const Sidebar = ({
+  openHamburger,
+  handleAddBoard,
+  createdBoards,
+  setSelectedBoard,
+  updateBoards,
+  selectedBoard,
+}) => {
   const [showBoards, setShowBoards] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // State to manage EditBoards modal
+  const [editedBoardName, setEditedBoardName] = useState(""); // State to hold edited board name
 
   const toggleShowBoards = () => {
-    setShowBoards(prevState => !prevState);
+    setShowBoards((prevState) => !prevState);
   };
+
+  const handleEditBoard = (board) => {
+    setSelectedBoard(board); // Set the selected board
+    setEditedBoardName(board.name); // Set the edited board name
+    setShowEditModal(true); // Open EditBoards modal when edit button is clicked
+  };
+
 
   return (
     <aside
-      id="logo-sidebar"
-      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-        openHamburger ? 'translate-x-0' : '-translate-x-full'
-      } bg-sky-800 border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
-      aria-label="Sidebar"
-    >
+    id="logo-sidebar"
+    className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
+      openHamburger ? "translate-x-0" : "-translate-x-full"
+    } bg-sky-800 border-r border-sky-800 sm:translate-x-0 dark:bg-sky-800 dark:border-sky-800`}
+    aria-label="Sidebar"
+  >
       <div className="h-full px-3 pb-4 overflow-y-auto bg-sky-800 dark:bg-sky-800">
         <ul className="space-y-2 mt-2 font-medium">
           <li>
@@ -54,35 +71,52 @@ const Sidebar = ({ openHamburger, handleAddBoard, createdBoards, setSelectedBoar
                 <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
                 <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
               </svg>
-              <span className="ms-3">{showBoards ? "Hide" : "Show"} Boards</span>
+              <span className="ms-3">
+                {showBoards ? "Hide" : "Show"} Boards
+              </span>
             </button>
           </li>
         </ul>
-        
         {showBoards && (
-          <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
-            <ul className="space-y-2 mt-2 font-medium">
-              {createdBoards.map((board, index) => (
-                <li key={index}>
-                  <div className='flex'>
-                    <button 
-                      className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                      onClick={() => setSelectedBoard(board)} // Add onClick to set the selected board
-                    >
-                      {board.name}
+        <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
+          <ul className="space-y-2 mt-2 font-medium">
+            {createdBoards.map((board, index) => (
+              <li key={index}>
+                <div className="flex">
+                  <button
+                    className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    onClick={() => setSelectedBoard(board)}
+                  >
+                    {board.name}
+                  </button>
+                  <div className="flex">
+                    <button>
+                      <img
+                        className="h-10 w-10"
+                        src={editpic}
+                        onClick={() => handleEditBoard(board)}
+                      />
                     </button>
-                    <div className='flex'>
-                      <button><img className='h-10 w-10' src={editpic}/></button>
-                      <button><img className='h-10 w-10' src={closepic}/></button>
-                    </div>
+                    <button>
+                      <img className="h-10 w-10" src={closepic} />
+                    </button>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       </div>
+      {showEditModal && (
+        <EditBoards
+          handleEditBoardClose={() => setShowEditModal(false)}
+          updateBoards={updateBoards}
+          selectedBoard={selectedBoard}
+          editedBoardName={editedBoardName} // Pass edited board name to EditBoards component
+          setEditedBoardName={setEditedBoardName} // Pass function to update edited board name
+        />
+      )}
     </aside>
   );
 };

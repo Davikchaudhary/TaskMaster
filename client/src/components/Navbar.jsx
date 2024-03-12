@@ -1,28 +1,26 @@
-import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom'
-import userpic from '../assets/images/user.svg'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import userpic from "../assets/images/user.svg";
 
-
-const Navbar = ({handleHamburger, userDetail}) => {
-
+const Navbar = ({ handleHamburger, userDetail }) => {
   const navigate = useNavigate();
-  
-  const [openUserDetails, setOpenUserDetails] = useState(false)
+
+  const [openUserDetails, setOpenUserDetails] = useState(false);
 
   const [logout, setLogOut] = useState(false);
 
   const handleLogOut = () => {
-    setLogOut(true)
+    setLogOut(true);
     // localStorage.removeItem('loggedIn');
-    localStorage.removeItem('userId');
-    localStorage.setItem('loggedIn', false);
-    localStorage.removeItem('userId');
-    navigate('/login')
-  }
+    localStorage.removeItem("userId");
+    localStorage.setItem("loggedIn", false);
+    localStorage.removeItem("userId");
+    navigate("/login");
+  };
 
   const handleUserdetails = () => {
-    setOpenUserDetails(p => !p);
-  }
+    setOpenUserDetails((p) => !p);
+  };
 
   return (
     <nav className=" fixed top-0 z-50 w-full bg-sky-800 border-b border-sky-800 dark:bg-sky-800 dark:border-sky-800">
@@ -52,7 +50,7 @@ const Navbar = ({handleHamburger, userDetail}) => {
             </span>
           </div>
         </div>
-        
+
         <div className="flex items-center">
           <div className={`flex items-center ms-3 sm:block`}>
             <div>
@@ -63,23 +61,34 @@ const Navbar = ({handleHamburger, userDetail}) => {
                 aria-expanded="false"
                 data-dropdown-toggle="dropdown-user"
               >
-                <img className='h-6 w-6' src={userpic}/>
-            
-                
-                 
+                <img className="h-6 w-6" src={userpic} />
               </button>
             </div>
-            <div className={`${openUserDetails ? 'block' : 'hidden'} z-50 absolute my-4 -mx-10 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
+            <div
+              className={`${
+                openUserDetails ? "block" : "hidden"
+              } z-50 absolute lg:my-4 lg:-mx-10  text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
               id="dropdown-user`}
             >
               <div className="px-4 py-3" role="none">
-                <p className="text-sm text-gray-900 dark:text-white" role="none">
+                <p
+                  className="text-sm text-gray-900 dark:text-white"
+                  role="none"
+                >
                   {userDetail.uname}
                 </p>
-                <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                <p
+                  className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                  role="none"
+                >
                   {userDetail.email}
                 </p>
-                <button onClick={handleLogOut} className='text-sm font-medium text-red-500 truncate dark:text-red-500'>Log Out</button>
+                <button
+                  onClick={handleLogOut}
+                  className="text-sm font-medium text-red-500 truncate dark:text-red-500"
+                >
+                  Log Out
+                </button>
               </div>
             </div>
           </div>

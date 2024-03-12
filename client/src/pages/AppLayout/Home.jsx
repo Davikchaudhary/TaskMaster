@@ -1,51 +1,59 @@
-// Home.js
-
-import React, { useEffect, useState } from 'react';
-import API from '../../axios';
-import Navbar from '../../components/Navbar';
-import Sidebar from '../../components/Sidebar';
-import Boards from '../../components/Boards';
-import CreateBoards from '../../components/CreateBoards';
+import React, { useEffect, useState } from "react";
+import API from "../../axios";
+import Navbar from "../../components/Navbar";
+import Sidebar from "../../components/Sidebar";
+import Boards from "../../components/Boards";
+import CreateBoards from "../../components/CreateBoards";
+import EditBoards from "../../components/EditBoards";
 
 const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
   const [openCreateBoards, setOpenCreateBoards] = useState(false);
+  const [openEditBoards, setOpenEditBoards] = useState(false);
   const [createdBoards, setCreatedBoards] = useState([]);
-  const [selectedBoard, setSelectedBoard] = useState(null); // State to store selected board details
+  const [selectedBoard, setSelectedBoard] = useState(null);
   const [userDetail, setUserDetail] = useState({});
   const [error, setError] = useState("");
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
 
   const getUserDetail = async () => {
     try {
       const res = await API.get(`/user/${userId}`);
-      setUserDetail(res.data)
+      setUserDetail(res.data);
     } catch (error) {
       setError(error.message);
     }
-  }
+  };
 
   useEffect(() => {
     getUserDetail();
     getBoards(); // Fetch boards when the component mounts
-  }, [])
+  }, []);
 
   const getBoards = async () => {
     try {
       const res = await API.get(`/user/${userId}/getboards`);
       setCreatedBoards(res.data); // Set the fetched boards to state
     } catch (error) {
-      console.error('Error fetching boards:', error);
+      console.error("Error fetching boards:", error);
     }
-  }
+  };
 
   const handleHamburger = () => {
-    setOpenHamburger(prevState => !prevState);
+    setOpenHamburger((prevState) => !prevState);
   };
 
   const handleAddBoard = () => {
     setOpenCreateBoards(true);
+  };
+
+  const handleEditBoard = () => {
+    setOpenEditBoards(true);
+  };
+
+  const handleEditBoardClose = () => {
+    setOpenEditBoards(false); // Close the edit board modal
   };
 
   const handleCloseModal = () => {
@@ -65,9 +73,29 @@ const Home = () => {
   return (
     <>
       <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
-      <Sidebar openHamburger={openHamburger} handleAddBoard={handleAddBoard} createdBoards={createdBoards} setSelectedBoard={selectBoard} />
-      <Boards selectedBoard={selectedBoard} /> {/* Pass selected board details to Boards component */}
-      {openCreateBoards && <CreateBoards handleCloseModal={handleCloseModal} updateBoards={updateBoards} />}
+      <Sidebar
+        openHamburger={openHamburger}
+        handleAddBoard={handleAddBoard}
+        createdBoards={createdBoards}
+        setSelectedBoard={selectBoard}
+        updateBoards={updateBoards} 
+        selectedBoard={selectedBoard}
+      />
+      <Boards selectedBoard={selectedBoard} />{" "}
+      {/* Pass selected board details to Boards component */}
+      {openCreateBoards && (
+        <CreateBoards
+          handleCloseModal={handleCloseModal}
+          updateBoards={updateBoards}
+        />
+      )}
+      {openEditBoards && (
+        <EditBoards
+          handleEditBoardClose={handleEditBoardClose}
+          updateBoards={updateBoards}
+          selectedBoard={selectedBoard}
+        />
+      )}
     </>
   );
 };
