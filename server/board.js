@@ -129,14 +129,14 @@ const boardSchema = new mongoose.Schema({
     type: String, // Change to String type
     required: true,
     default: () => {
-      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+      return moment().format('DD MMM YYYY HH:mm:ss') // Format: "09 Mar 2024"
     },
   },
   lastModifiedAt: {
     type: String, // Change to String type
     required: true,
     default: () => {
-      return moment().format('DD MMM YYYY'); // Format: "09 Mar 2024"
+      return moment().format('DD MMM YYYY HH:mm:ss') // Format: "09 Mar 2024"
     },
   },
   columns: {
