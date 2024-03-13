@@ -35,16 +35,25 @@ const Boards = ({ selectedBoard }) => {
     setColumnId(columnId);
   };
 
-  const addTask = (columnId, newTask) => {
-    setTasks((prevTasks) => {
-      const updatedTasks = { ...prevTasks };
-      if (!Array.isArray(updatedTasks[columnId])) {
-        updatedTasks[columnId] = [];
-      }
-      updatedTasks[columnId].push(newTask);
-      return updatedTasks;
-    });
+  const addTask = async (columnId, newTask) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const res = await API.post(`/board/${selectedBoard.name}/tasks?userId=${userId}`, {
+        ...newTask,
+        column: columnId // Include the column information in the request
+      });
+      // Assuming the backend returns the newly created task
+      const createdTask = res.data.newTask;
+      setTasks((prevTasks) => {
+        const updatedTasks = { ...prevTasks };
+        updatedTasks[columnId].push(createdTask);
+        return updatedTasks;
+      });
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
+  
 
   const editTask = (columnId, taskIndex, updatedTask) => {
     setTasks((prevTasks) => {

@@ -56,7 +56,6 @@ const Home = () => {
     setSelectedBoard(board);
     setOpenEditBoards(true); // Open the edit board modal
   };
-  
 
   const handleEditBoardClose = () => {
     setOpenEditBoards(false); // Close the edit board modal
@@ -85,26 +84,25 @@ const Home = () => {
         handleAddBoard={handleAddBoard}
         createdBoards={createdBoards}
         setSelectedBoard={selectBoard}
-        updateBoards={updateBoards} 
+        updateBoards={updateBoards}
         selectedBoard={selectedBoard}
-        setOpenEditBoards = {setOpenEditBoards}
+        setOpenEditBoards={setOpenEditBoards}
       />
-      <Boards selectedBoard={selectedBoard} />{" "}
-      {/* Pass selected board details to Boards component */}
+      {/* Only render the Boards component when a board is selected */}
+      {selectedBoard && <Boards selectedBoard={selectedBoard} />}
       {openCreateBoards && (
         <CreateBoards
           handleCloseModal={handleCloseModal}
           updateBoards={updateBoards}
         />
       )}
-   {openEditBoards && (
+      {openEditBoards && (
         <EditBoards
           handleEditBoardClose={() => setOpenEditBoards(false)}
           updateBoards={updateBoards}
           selectedBoard={selectedBoard}
         />
       )}
-
     </>
   );
 };
