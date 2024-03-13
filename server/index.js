@@ -5,7 +5,7 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 const bcrypt = require("bcryptjs");
-
+const moment = require('moment');
 const jwt = require("jsonwebtoken");
 const JWT_SECRET= "KSABDBIB32KFBHB@B3KBFUI33BF92FUBF392YR"
 
@@ -325,7 +325,7 @@ app.delete('/user/:userId/board/:boardName', async (req, res) => {
 //TASKS
 
 //Post the task
-const moment = require('moment');
+
 
 app.post('/board/:boardName/tasks', async (req, res) => {
   const { userId } = req.query;
