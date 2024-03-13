@@ -10,6 +10,7 @@ const Sidebar = ({
   setSelectedBoard,
   updateBoards,
   selectedBoard,
+  setOpenEditBoards
 }) => {
   const [showBoards, setShowBoards] = useState(false);
 
@@ -19,15 +20,16 @@ const Sidebar = ({
 
   const handleEditBoard = (board) => {
     setSelectedBoard(board);
+    setOpenEditBoards(true); 
   };
 
   const handleDeleteBoard = async (boardId) => {
     try {
       const userId = localStorage.getItem("userId");
-      
+
       // Make a DELETE request to delete the board
       await API.delete(`/user/${userId}/board/${boardId}`);
-      
+
       // Update the boards list after deletion
       updateBoards();
     } catch (error) {
@@ -100,8 +102,9 @@ const Sidebar = ({
                     </button>
                     <div className="flex">
                       <button onClick={() => handleEditBoard(board)}>
-                        <img className="h-10 w-10" src={editpic} />
+                        <img className="h-10 w-10" src={editpic} alt="Edit" />
                       </button>
+
                       <button onClick={() => handleDeleteBoard(board._id)}>
                         <img className="h-10 w-10" src={closepic} />
                       </button>

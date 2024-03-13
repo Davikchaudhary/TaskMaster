@@ -52,9 +52,11 @@ const Home = () => {
     setOpenCreateBoards(false); // Close the create board modal
   };
 
-  const handleEditBoard = () => {
-    setOpenEditBoards(true);
+  const handleEditBoard = (board) => {
+    setSelectedBoard(board);
+    setOpenEditBoards(true); // Open the edit board modal
   };
+  
 
   const handleEditBoardClose = () => {
     setOpenEditBoards(false); // Close the edit board modal
@@ -85,6 +87,7 @@ const Home = () => {
         setSelectedBoard={selectBoard}
         updateBoards={updateBoards} 
         selectedBoard={selectedBoard}
+        setOpenEditBoards = {setOpenEditBoards}
       />
       <Boards selectedBoard={selectedBoard} />{" "}
       {/* Pass selected board details to Boards component */}
@@ -94,13 +97,14 @@ const Home = () => {
           updateBoards={updateBoards}
         />
       )}
-      {openEditBoards && (
+   {openEditBoards && (
         <EditBoards
-          handleEditBoardClose={handleEditBoardClose}
+          handleEditBoardClose={() => setOpenEditBoards(false)}
           updateBoards={updateBoards}
           selectedBoard={selectedBoard}
         />
       )}
+
     </>
   );
 };
