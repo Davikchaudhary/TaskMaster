@@ -81,7 +81,7 @@ app.post("/register", async (req, res) => {
 
 
 
-
+//login
 app.post('/login-user', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -105,7 +105,7 @@ app.post('/login-user', async (req, res) => {
 
 
 
-
+//USERS
 // get userby id
 app.get('/user/:id', async (req, res) => {
   try {
@@ -120,6 +120,10 @@ app.get('/user/:id', async (req, res) => {
   }
 });
 
+
+
+
+//BOARD
 
 // getboardbyid
 app.get('/boards/:id',async (req, res) => {
@@ -316,6 +320,9 @@ app.delete('/user/:userId/board/:boardName', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+//TASKS
 
 //Post the task
 const moment = require('moment');
