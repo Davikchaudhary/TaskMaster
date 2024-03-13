@@ -29,7 +29,7 @@ const EditBoards = ({
       const newName = boardName; // Use the updated board name from state
 
       // Make a PUT request to update the board name
-      const res = await API.put(`/user/${userId}/board/${boardName}`, {
+      const res = await API.put(`/user/${userId}/board/${selectedBoard.name}`, {
         name: newName, // Send the new board name as part of the request body
       });
 
