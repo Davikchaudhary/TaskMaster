@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import closepic from "../assets/images/close.svg";
 import editpic from "../assets/images/edit.svg";
@@ -23,19 +24,20 @@ const Sidebar = ({
     setOpenEditBoards(true); 
   };
 
-  const handleDeleteBoard = async (boardId) => {
+  const handleDeleteBoard = async (boardName) => {
     try {
       const userId = localStorage.getItem("userId");
-
+  
       // Make a DELETE request to delete the board
-      await API.delete(`/user/${userId}/board/${boardId}`);
-
+      await API.delete(`/user/${userId}/board/${encodeURIComponent(boardName)}`);
+  
       // Update the boards list after deletion
       updateBoards();
     } catch (error) {
       console.error("Error deleting board:", error);
     }
   };
+  
 
   return (
     <aside
@@ -105,9 +107,10 @@ const Sidebar = ({
                         <img className="h-10 w-10" src={editpic} alt="Edit" />
                       </button>
 
-                      <button onClick={() => handleDeleteBoard(board._id)}>
-                        <img className="h-10 w-10" src={closepic} />
-                      </button>
+                      <button onClick={() => handleDeleteBoard(board.name)}>
+  <img className="h-10 w-10" src={closepic} alt="Delete" />
+</button>
+
                     </div>
                   </div>
                 </li>

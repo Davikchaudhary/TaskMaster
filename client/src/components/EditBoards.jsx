@@ -13,7 +13,7 @@ const EditBoards = ({
 
   useEffect(() => {
     if (selectedBoard) {
-      setBoardName(editedBoardName); // Set the board name to the edited board name
+      setBoardName(editedBoardName);
     }
   }, [selectedBoard, editedBoardName]);
 
