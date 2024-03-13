@@ -20,11 +20,19 @@ const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
     // Handle form submission
     const handleSubmit = (event) => {
       event.preventDefault();
-      const newTask = {
-        name: formData.name,
-        priority: formData.priority,
-        description: formData.description
+      const priorityMap = {
+        'bg-rose-300': 'Immediate',
+        'bg-orange-300': 'High',
+        'bg-blue-300': 'Medium',
+        'bg-green-300': 'Low',
       };
+    
+      const newTask = {
+        title: formData.name,
+        description: formData.description,
+        priority: priorityMap[formData.priority], // Use the mapped enum value
+      };
+      
       addTask(columnId, newTask);
       onClose();
     };
