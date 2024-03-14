@@ -1,546 +1,501 @@
-const express = require("express");
-const app = express();
-const mongoose=require('mongoose');
-app.use(express.json());
-const cors = require("cors");
-app.use(cors());
-const bcrypt = require("bcryptjs");
-const moment = require('moment');
-const jwt = require("jsonwebtoken");
-const JWT_SECRET= "KSABDBIB32KFBHB@B3KBFUI33BF92FUBF392YR"
+import React, { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import CreateTasks from "./CreateTasks";
+import API from "../axios";
 
-const mongoURL = "mongodb+srv://davikchaudhary:taskmaster@cluster0.ikldpmv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const Boards = ({ selectedBoard }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tasks, setTasks] = useState({
+    todo: [],
+    backlog: [],
+    inProgress: [],
+    completed: [],
+  });
+  const [columnId, setColumnId] = useState("");
+  const [createdByUname, setCreatedByUname] = useState("");
 
-
-mongoose
-.connect(mongoURL,{
-    useNewUrlParser: true,
-})
-.then(()=>{
-    console.log("connected to database");
-})
-.catch(e=>console.log(e))
-
-
-app.listen(5000,()=>{
-    console.log("server started");
-});
-
-
-require("./userDetails");
-const User = mongoose.model("UserInfo");
-
-require("./board.js");
-const Board=mongoose.model("Board");
-const Task=mongoose.model("Task");
-
-
-
-//signup
-app.post("/register", async (req, res) => {
-  const { uname, email, password } = req.body;
-  const encryptedPassword = await bcrypt.hash(password, 10);
-
-  try {
-    const oldUser = await User.findOne({ email });
-    if (oldUser) {
-      return res.send({ error: "User already exists" });
-    }
-
-    const newUser = await User.create({
-      uname,
-      email,
-      password: encryptedPassword,
-      boards: [],
-    });
-
-    const newBoard = await Board.create({
-      name: "Default Board",
-      createdBy: newUser._id,
-      columns: {
-        todo: [],
-        backlog: [],
-        inProgress: [],
-        completed: [],
-      },
-    });
-
-    await newBoard.save();
-
-    newUser.boards.push(newBoard._id);
-    await newUser.save();
-
-    res.send({ status: "ok" });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).send({ status: "error" });
-  }
-});
-
-
-
-
-
-//login
-app.post('/login-user', async (req, res) => {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    const userId = user._id;
-    
-    
-    if (!user) {
-        return res.send({ error: "User Not Found" });
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    console.log(user);
-    if (passwordMatch) {
-        // console.log(passwordMatch)
-        const token = jwt.sign({userId}, JWT_SECRET);
-        return res.status(201).json({status: "ok",userId});
-    }
-
-    res.json({ status: 'error', error: 'Invalid Password' });
-});
-
-
-
-//USERS
-// get userby id
-app.get('/user/:id', async (req, res) => {
-  try {
-      const user = await User.findById(req.params.id);
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          const res = await API.get(`/user/${userId}`);
+          setCreatedByUname(res.data.uname); // Assuming 'uname' is the field containing the username
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error);
       }
-      return res.json(user);
-  } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Server Error' });
-  }
-});
-
-
-
-
-//BOARD
-
-// getboardbyid
-app.get('/boards/:id',async (req, res) => {
-  try {
-    const board = await Board.findById(req.params.id);
-    if (!board) {
-        return res.status(404).json({ message: 'Board not found' });
-    }
-    return res.json(board);
-} catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server Error' });
-}
-});
-
-
-
-//get boards of a userby userid
-
-app.get('/user/:id/getboards',async (req, res) => {
-  try {
-    // const board = await Board.findById(req.params.id);
-    const user=await User.findById(req.params.id).populate('boards');
-    if (!user) {
-        return res.status(404).json({ message: 'user not found' });
-    }
-
-    return res.json(user.boards);
-} catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server Error' });
-}
-});
-
-
-// creating board api
-app.post('/user/:id/addboards', async (req, res) => {
-  const { name } = req.body;
-  const userId = req.params.id;
-
-  try {
-    // Find the user by ID
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    const existingBoard = await Board.findOne({ name });
-
-    if (existingBoard) {
-      return res.status(400).json({ error: 'Board name must be unique' });
-    }
-
-    // Create default columns for the new board
-
-    const columns = {
-      todo: [],
-      backlog: [],
-      inProgress: [],
-      completed: [],
     };
 
-    // Create a new board
-    const newBoard = await Board.create({
-      name,
-      createdBy: userId, // Assign the user ID as createdBy
-      columns,
+    fetchUsername();
+  }, []);
+
+  const handleOpenModal = (columnId) => {
+    setIsModalOpen(true);
+    setColumnId(columnId);
+  };
+
+  const addTask = async (columnId, newTask) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const res = await API.post(`/board/${selectedBoard.name}/tasks?userId=${userId}`, {
+        ...newTask,
+        column: columnId // Include the column information in the request
+      });
+      // Assuming the backend returns the newly created task
+      const createdTask = res.data.newTask;
+      setTasks((prevTasks) => {
+        const updatedTasks = { ...prevTasks };
+        updatedTasks[columnId].push(createdTask);
+        return updatedTasks;
+      });
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  };
+  
+
+  const editTask = (columnId, taskIndex, updatedTask) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = { ...prevTasks };
+      updatedTasks[columnId][taskIndex] = updatedTask;
+      return updatedTasks;
     });
+    setIsModalOpen(true);
+    setColumnId(columnId);
+    setTaskToEdit(updatedTask);
+  };
 
-    // Save the new board
-    await newBoard.save();
+  const [taskToEdit, setTaskToEdit] = useState(null);
 
-    // Add the new board's ID to the user's boards array
-    user.boards.push(newBoard._id);
-    await user.save();
-
-    res.status(201).json(newBoard,newBoard._id);
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-//get board by boardname
-app.get('/user/:userId/board/:boardName', async (req, res) => {
-  const { userId, boardName } = req.params;
-
-  try {
-    // Find the UserInfo document by userId and populate the 'boards' field
-    const user = await User.findById(userId).populate('boards');
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Find the board with the specified boardName in the user's boards array
-    const board = user.boards.find((board) => board.name === boardName);
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-
-    res.status(200).json(board);
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
-
-
-// PUT update a board by userId and boardName
-app.put('/user/:userId/board/:boardName', async (req, res) => {
-  const { userId, boardName } = req.params;
-  const { newName } = req.body;
-
-  console.log('Updating board:', userId, boardName);
-
-  try {
-    if (!newName) {
-      return res.status(400).json({ error: 'New board name is required' });
-    }
-
-    // Find the board by boardName and createdBy (userId)
-    const board = await Board.findOne({ name: boardName, createdBy: userId });
-
-    if (!board) {
-      console.log('Board not found for user:', userId, boardName);
-      return res.status(404).json({ error: 'Board not found for the user' });
-    }
-
-    // Check if the new name is the same as the existing name
-    if (newName === board.name) {
-      console.log('New name is the same as existing name');
-      return res.status(400).json({ error: 'New board name must be different from the current name' });
-    }
-
-    // Check if the new name is already used by another board for the same user
-    const existingBoard = await Board.findOne({ name: newName, createdBy: userId });
-
-    if (existingBoard) {
-      console.log('New name is already used for another board');
-      return res.status(400).json({ error: 'Board name must be unique for the user' });
-    }
-
-    // Update the board name
-    board.name = newName;
-    board.lastModifiedAt = moment().format('DD MMM YYYY HH:mm:ss');
-
-    // Save the updated board
-    await board.save();
-
-    console.log('Board updated successfully:', board);
-    res.status(200).json({ message: 'Board updated successfully', updatedBoard: board });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
-// DELETE a board by userId and boardName
-app.delete('/user/:userId/board/:boardName', async (req, res) => {
-  const { userId, boardName } = req.params;
-
-  try {
-    // Find the user by userId
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Find the board by boardName and createdBy (userId)
-    const board = await Board.findOne({ name: boardName, createdBy: userId });
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found for the user' });
-    }
-
-    // Delete the board from the user's list of boards
-    user.boards.pull(board._id);
-    await user.save();
-
-    // Delete the board itself
-    await Board.findOneAndDelete({ name: boardName, createdBy: userId });
-
-    console.log('Board deleted successfully:', board);
-    res.status(200).json({ message: 'Board deleted successfully', deletedBoard: board });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-//TASKS
-
-//Post the task
-
-
-app.post('/board/:boardName/tasks', async (req, res) => {
-  const { userId } = req.query;
-  const { boardName } = req.params;
-  const { title, description, priority, column } = req.body;
-
-  try {
-    // Find the board by name and user
-    const board = await Board.findOne({ name: boardName, createdBy: userId });
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-
-    // Create a new task with status same as column
-    const newTask = new Task({
-      title,
-      description,
-      priority,
-      status: column, // Set status same as column
-      createdAt: moment().format('DD MMM YYYY HH:mm:ss'),
-      updatedAt: moment().format('DD MMM YYYY HH:mm:ss'),
+  const deleteTask = (columnId, taskIndex) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = { ...prevTasks };
+      updatedTasks[columnId].splice(taskIndex, 1);
+      return updatedTasks;
     });
+  };
 
-    // Save the task
-    await newTask.save();
-
-    // Update the task's column in the board
-    const updatedColumn = board.columns[column];
-    updatedColumn.push(newTask._id);
-    board.markModified(`columns.${column}`);
-
-    // Update the board's lastModifiedAt
-    board.lastModifiedAt = moment().format('DD MMM YYYY');
-
-    // Save the updated board
-    await board.save();
-
-    console.log('Task created successfully:', newTask);
-    res.status(201).json({ message: 'Task created successfully', newTask });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
-// PUT update a task for a board
-app.put('/board/:boardName/tasks/:taskId', async (req, res) => {
-  const { userId } = req.query;
-  const { boardName, taskId } = req.params;
-  const { name, description, priority, status } = req.body;
-
-  try {
-    // Find the board by name and user
-    const board = await Board.findOne({ name: boardName, createdBy: userId });
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (
+      !destination ||
+      (source.index === destination.index &&
+        source.droppableId === destination.droppableId)
+    ) {
+      return;
     }
-
-    // Check if the task exists in any of the board's columns
-    let taskFound = false;
-    for (const col of Object.keys(board.columns)) {
-      if (board.columns[col].includes(taskId)) {
-        taskFound = true;
-        break;
-      }
-    }
-
-    if (!taskFound) {
-      return res.status(404).json({ error: 'Task not found for the board' });
-    }
-
-    // Find and update the task
-    const updatedTask = await Task.findByIdAndUpdate(
-      taskId,
-      { name, description, priority, status },
-      { new: true }
+    const updatedTasks = { ...tasks };
+    const movedTask = updatedTasks[source.droppableId].splice(
+      source.index,
+      1
+    )[0];
+    updatedTasks[destination.droppableId].splice(
+      destination.index,
+      0,
+      movedTask
     );
-    updatedTask.updatedAt=moment().format('DD MMM YYYY HH:mm:ss');
+    setTasks(updatedTasks);
+  };
 
-    // Remove the task from its current column
-    for (const col of Object.keys(board.columns)) {
-      const index = board.columns[col].indexOf(taskId);
-      if (index > -1) {
-        board.columns[col].splice(index, 1);
-        break;
-      }
-    }
+  return (
+    <>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="p-4 mt-20 sm:ml-64">
+          {selectedBoard && (
+            <div className="flex flex-col space-y-4">
+              <h2 className="mb-4 text-2xl text-center p-2 font-bold">
+                {selectedBoard.name}
+              </h2>
+              <div className="flex justify-between">
+                <h3 className="font-extralight">
+                  Created on: {selectedBoard.createdAt}
+                </h3>
+                <h3 className="font-light">Created by: {createdByUname}</h3>
+                <h3 className="font-extralight">
+                  last modified on: {selectedBoard.lastModifiedAt}
+                </h3>
+              </div>
+              <div className="flex justify-around">
+                <h3 className=" bg-rose-300 p-1 rounded-xl text-black font-semibold">
+                  Immediate
+                </h3>
+                <h3 className=" bg-orange-300 p-1 rounded-xl text-black font-semibold">
+                  High
+                </h3>
+                <h3 className=" bg-blue-300 p-1 rounded-xl text-black font-semibold">
+                  Medium
+                </h3>
+                <h3 className=" bg-green-300 p-1 rounded-xl text-black font-semibold">
+                  Low
+                </h3>
+              </div>
+            </div>
+          )}
 
-    // Update the task's column in the board
-    if (board.columns[status]) {
-      board.columns[status].push(updatedTask._id);
-    }
+          <div className="flex mt-4 flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10">
+            {/* Todo Column */}
+            <Droppable droppableId="todo">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                >
+                  <div className="flex justify-between rounded-xl bg-blue-400 p-4 shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-indigo-50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-blue-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h2 className="font-bold text-center text-black">
+                        To-do
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-600">Last updated</p>
+                    </div>
+                    <div className="flex justify-center text-center rounded-lg text-white">
+                      <button
+                        onClick={() => handleOpenModal("todo")}
+                        className="cursor-pointer rounded-lg bg-slate-600 hover:bg-slate-800 p-2"
+                      >
+                        Add Tasks
+                      </button>
+                    </div>
+                  </div>
+                  {tasks.todo.map((task, index) => (
+                    <Draggable
+                      key={index}
+                      draggableId={`todo-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div
+                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-rose-300 ${task.priority}`}
+                          >
+                            <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
+                              {task.name}
+                            </h5>
+                            <p className="font-normal text-gray-700 dark:text-gray-900">
+                              {task.description}
+                            </p>
+                            <div className="space-x-5 text-end">
+                              <button
+                                onClick={() =>
+                                  editTask("todo", index, {
+                                    name: "Updated Task",
+                                    description: "Updated Description",
+                                    priority: "bg-rose-300",
+                                  })
+                                }
+                              >
+                                Edit Task
+                              </button>
+                              <button onClick={() => deleteTask("todo", index)}>
+                                Delete Task
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+            {/* Backlog Column */}
+            <Droppable droppableId="backlog">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                >
+                  {/* Backlog Header */}
+                  <div className="flex justify-between rounded-xl bg-red-400 p-4 shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-100 bg-red-50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-red-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h2 className="font-bold text-center text-black">
+                        Backlog
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-600">Last updated</p>
+                    </div>
+                    <div className="flex justify-center text-center rounded-lg text-white">
+                      <button
+                        onClick={() => handleOpenModal("backlog")}
+                        className="cursor-pointer rounded-lg bg-slate-600 hover:bg-slate-800 p-2"
+                      >
+                        Add Tasks
+                      </button>
+                    </div>
+                  </div>
+                  {tasks.backlog.map((task, index) => (
+                    <Draggable
+                      key={index}
+                      draggableId={`backlog-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div
+                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                          >
+                            <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
+                              {task.name}
+                            </h5>
+                            <p className="font-normal  text-gray-700 dark:text-gray-900">
+                              {task.description}
+                            </p>
+                            <div className="space-x-5 text-end">
+                              <button
+                                onClick={() =>
+                                  editTask("backlog", index, {
+                                    name: "Updated Task",
+                                    description: "Updated Description",
+                                    priority: "bg-orange-300",
+                                  })
+                                }
+                              >
+                                Edit Task
+                              </button>
+                              <button
+                                onClick={() => deleteTask("backlog", index)}
+                              >
+                                Delete Task
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+            {/* In Progress Column */}
+            <Droppable droppableId="inProgress">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                >
+                  {/* In Progress Header */}
+                  <div className="flex justify-between rounded-xl bg-orange-400 p-4 shadow-lg">
+                    <div className="flex h-12 w-12 items-center  justify-center rounded-full border border-orange-100 bg-orange-50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-orange-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h2 className="font-bold text-center text-black">
+                        In Progress
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-600">Last updated</p>
+                    </div>
+                    <div className="flex justify-center text-center rounded-lg text-white">
+                      <button
+                        onClick={() => handleOpenModal("inProgress")}
+                        className="cursor-pointer rounded-lg bg-slate-600 hover:bg-slate-800 p-2"
+                      >
+                        Add Tasks
+                      </button>
+                    </div>
+                  </div>
+                  {tasks.inProgress.map((task, index) => (
+                    <Draggable
+                      key={index}
+                      draggableId={`inProgress-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div
+                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                          >
+                            <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
+                              {task.name}
+                            </h5>
+                            <p className="font-normal text-gray-700 dark:text-gray-900">
+                              {task.description}
+                            </p>
+                            <div className="space-x-5 text-end">
+                              <button
+                                onClick={() =>
+                                  editTask("inProgress", index, {
+                                    name: "Updated Task",
+                                    description: "Updated Description",
+                                    priority: "bg-orange-300",
+                                  })
+                                }
+                              >
+                                Edit Task
+                              </button>
+                              <button
+                                onClick={() => deleteTask("inProgress", index)}
+                              >
+                                Delete Task
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+            {/* Completed Column */}
+            <Droppable droppableId="completed">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                >
+                  {/* Completed Header */}
+                  <div className="flex justify-between rounded-xl bg-green-400 p-4 shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-green-100 bg-indigo-50">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-green-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h2 className="font-bold text-center text-black">
+                        Completed
+                      </h2>
+                      <p className="mt-2 text-sm text-gray-600">Last updated</p>
+                    </div>
+                    <div className="flex justify-center text-center rounded-lg text-white">
+                      <button
+                        onClick={() => handleOpenModal("completed")}
+                        className="cursor-pointer rounded-lg bg-slate-600 hover:bg-slate-800 p-2"
+                      >
+                        Add Tasks
+                      </button>
+                    </div>
+                  </div>
+                  {tasks.completed.map((task, index) => (
+                    <Draggable
+                      key={index}
+                      draggableId={`completed-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div
+                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                          >
+                            <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
+                              {task.name}
+                            </h5>
+                            <p className="font-normal text-gray-700 dark:text-gray-900">
+                              {task.description}
+                            </p>
+                            <div className="space-x-5 text-end">
+                              <button
+                                onClick={() =>
+                                  editTask("completed", index, {
+                                    name: "Updated Task",
+                                    description: "Updated Description",
+                                    priority: "bg-indigo-300",
+                                  })
+                                }
+                              >
+                                Edit Task
+                              </button>
+                              <button
+                                onClick={() => deleteTask("completed", index)}
+                              >
+                                Delete Task
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
+          {isModalOpen && (
+            <CreateTasks
+              onClose={() => setIsModalOpen(false)}
+              columnId={columnId}
+              addTask={addTask}
+              taskToEdit={taskToEdit}
+            />
+          )}
+        </div>
+      </DragDropContext>
+    </>
+  );
+};
 
-    // Save the updated board
-    await board.save();
-
-    console.log('Task updated successfully:', updatedTask);
-    res.status(200).json({ message: 'Task updated successfully', updatedTask });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
-
-
-
-
-// DELETE a task for a board
- app.delete('/board/:boardName/tasks/:taskId', async (req, res) => {
-  const { userId } = req.query;
-  const { boardName, taskId } = req.params;
-  
-
-  try {
-    // Find the board by name and user
-    const board = await Board.findOne({ name: boardName, createdBy: userId });
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-
-    // Check if the task exists in any of the board's columns
-    let taskFound = false;
-    for (const col of Object.keys(board.columns)) {
-      if (board.columns[col].includes(taskId)) {
-        taskFound = true;
-        break;
-      }
-    }
-
-    if (!taskFound) {
-      return res.status(404).json({ error: 'Task not found for the board' });
-    }
-    for (const col of Object.keys(board.columns)) {
-      const index = board.columns[col].indexOf(taskId);
-      if (index > -1) {
-        board.columns[col].splice(index, 1);
-        break;
-      }
-    }
-
-    await Task.findByIdAndDelete(taskId);
-
-    board.lastModifiedAt = moment().format('DD MMM YYYY HH:mm:ss');
-
-    // Save the updated board
-    await board.save();
-
-
-  
-
-    console.log('Task deleted successfully');
-    res.status(200).json({ message: 'Task deleted successfully' });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-
-// get all task of a board
-app.get('/board/:boardName/tasks', async (req, res) => {
-  const { userId } = req.query;
-  const { boardName } = req.params;
-
-  try {
-    // Find the board by name and user
-    const board = await Board.findOne({ name: boardName, createdBy: userId })
-      .populate('columns.todo')
-      .populate('columns.backlog')
-      .populate('columns.inProgress')
-      .populate('columns.completed');
-
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-
-    const allTasks = [
-      ...board.columns.todo,
-      ...board.columns.backlog,
-      ...board.columns.inProgress,
-      ...board.columns.completed,
-    ];
-
-    console.log('All tasks for the board:', allTasks);
-    res.status(200).json({ tasks: allTasks });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-
-// gettting single task by id
-app.get('/tasks/:taskId', async (req, res) => {
-  const { taskId } = req.params;
-
-  try {
-    const task = await Task.findById(taskId);
-
-    if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-
-    res.status(200).json({ task });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
+export default Boards;
