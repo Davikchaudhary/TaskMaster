@@ -38,10 +38,13 @@ const Boards = ({ selectedBoard }) => {
   const addTask = async (columnId, newTask) => {
     try {
       const userId = localStorage.getItem("userId");
-      const res = await API.post(`/board/${selectedBoard.name}/tasks?userId=${userId}`, {
-        ...newTask,
-        column: columnId // Include the column information in the request
-      });
+      const res = await API.post(
+        `/board/${selectedBoard.name}/tasks?userId=${userId}`,
+        {
+          ...newTask,
+          column: columnId, // Include the column information in the request
+        }
+      );
       // Assuming the backend returns the newly created task
       const createdTask = res.data.newTask;
       setTasks((prevTasks) => {
@@ -53,7 +56,6 @@ const Boards = ({ selectedBoard }) => {
       console.error("Error adding task:", error);
     }
   };
-  
 
   const editTask = (columnId, taskIndex, updatedTask) => {
     setTasks((prevTasks) => {
@@ -98,6 +100,21 @@ const Boards = ({ selectedBoard }) => {
     setTasks(updatedTasks);
   };
 
+  const priorityTag = (priority) => {
+    switch (priority) {
+      case "Immediate":
+        return "Immediate";
+      case "High":
+        return "High Priority";
+      case "Medium":
+        return "Medium Priority";
+      case "Low":
+        return "Low Priority";
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -114,20 +131,6 @@ const Boards = ({ selectedBoard }) => {
                 <h3 className="font-light">Created by: {createdByUname}</h3>
                 <h3 className="font-extralight">
                   last modified on: {selectedBoard.lastModifiedAt}
-                </h3>
-              </div>
-              <div className="flex justify-around">
-                <h3 className=" bg-rose-300 p-1 rounded-xl text-black font-semibold">
-                  Immediate
-                </h3>
-                <h3 className=" bg-orange-300 p-1 rounded-xl text-black font-semibold">
-                  High
-                </h3>
-                <h3 className=" bg-blue-300 p-1 rounded-xl text-black font-semibold">
-                  Medium
-                </h3>
-                <h3 className=" bg-green-300 p-1 rounded-xl text-black font-semibold">
-                  Low
                 </h3>
               </div>
             </div>
@@ -186,7 +189,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-rose-300 ${task.priority}`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-blue-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.name}
@@ -200,7 +203,6 @@ const Boards = ({ selectedBoard }) => {
                                   editTask("todo", index, {
                                     name: "Updated Task",
                                     description: "Updated Description",
-                                    priority: "bg-rose-300",
                                   })
                                 }
                               >
@@ -209,6 +211,15 @@ const Boards = ({ selectedBoard }) => {
                               <button onClick={() => deleteTask("todo", index)}>
                                 Delete Task
                               </button>
+                            </div>
+                            <div className="flex justify-end mt-2">
+                              <span className="px-2 py-1 text-xs font-semibold text-blue-500 bg-blue-200 rounded-md mr-1">
+                                {task.priority && (
+                                  <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
+                                    {priorityTag(task.priority)}
+                                  </span>
+                                )}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -272,12 +283,12 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-red-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.name}
                             </h5>
-                            <p className="font-normal  text-gray-700 dark:text-gray-900">
+                            <p className="font-normal text-gray-700 dark:text-gray-900">
                               {task.description}
                             </p>
                             <div className="space-x-5 text-end">
@@ -286,7 +297,6 @@ const Boards = ({ selectedBoard }) => {
                                   editTask("backlog", index, {
                                     name: "Updated Task",
                                     description: "Updated Description",
-                                    priority: "bg-orange-300",
                                   })
                                 }
                               >
@@ -297,6 +307,15 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Delete Task
                               </button>
+                            </div>
+                            <div className="flex justify-end mt-2">
+                              <span className="px-2 py-1 text-xs font-semibold text-orange-500 bg-orange-200 rounded-md mr-1">
+                                {task.priority && (
+                                  <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
+                                    {priorityTag(task.priority)}
+                                  </span>
+                                )}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -360,7 +379,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.name}
@@ -374,7 +393,6 @@ const Boards = ({ selectedBoard }) => {
                                   editTask("inProgress", index, {
                                     name: "Updated Task",
                                     description: "Updated Description",
-                                    priority: "bg-orange-300",
                                   })
                                 }
                               >
@@ -385,6 +403,15 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Delete Task
                               </button>
+                            </div>
+                            <div className="flex justify-end mt-2">
+                              <span className="px-2 py-1 text-xs font-semibold text-orange-500 bg-orange-200 rounded-md mr-1">
+                                {task.priority && (
+                                  <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
+                                    {priorityTag(task.priority)}
+                                  </span>
+                                )}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -448,7 +475,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 bg-rose-300 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300 ${task.priority}`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-green-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.name}
@@ -462,7 +489,6 @@ const Boards = ({ selectedBoard }) => {
                                   editTask("completed", index, {
                                     name: "Updated Task",
                                     description: "Updated Description",
-                                    priority: "bg-indigo-300",
                                   })
                                 }
                               >
@@ -473,6 +499,15 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Delete Task
                               </button>
+                            </div>
+                            <div className="flex justify-end mt-2">
+                              <span className="px-2 py-1 text-xs font-semibold text-indigo-500 bg-indigo-200 rounded-md mr-1">
+                                {task.priority && (
+                                  <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
+                                    {priorityTag(task.priority)}
+                                  </span>
+                                )}
+                              </span>
                             </div>
                           </div>
                         </div>

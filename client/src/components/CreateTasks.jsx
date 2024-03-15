@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
-    // Initialize form state with taskToEdit details if provided
     const [formData, setFormData] = useState({
       name: taskToEdit ? taskToEdit.name : '',
       priority: taskToEdit ? taskToEdit.priority : '',
@@ -20,23 +19,34 @@ const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
     // Handle form submission
     const handleSubmit = (event) => {
       event.preventDefault();
-      const priorityMap = {
-        'bg-rose-300': 'Immediate',
-        'bg-orange-300': 'High',
-        'bg-blue-300': 'Medium',
-        'bg-green-300': 'Low',
-      };
-    
+      
       const newTask = {
         title: formData.name,
         description: formData.description,
-        priority: priorityMap[formData.priority], // Use the mapped enum value
+        priority: formData.priority, // Use the mapped enum value
       };
+
+      console.log(newTask)
       
       addTask(columnId, newTask);
       onClose();
     };
-
+    
+  const priorityTag = (priority) => {
+    switch (priority) {
+      case "Immediate":
+        return "Immediate";
+      case "High":
+        return "High Priority";
+      case "Medium":
+        return "Medium Priority";
+      case "Low":
+        return "Low Priority";
+      default:
+        return "";
+    }
+  };
+    
   return (
     <div id="crud-modal" className={`fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}>
       <div className="relative w-full max-w-md mx-auto bg-gray-700 rounded-lg shadow-lg">
@@ -88,10 +98,10 @@ const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               >
                 <option value="">Select Priority</option>
-                <option value="bg-rose-300">Immediate</option>
-                <option value="bg-orange-300">High</option>
-                <option value="bg-blue-300">Medium</option>
-                <option value="bg-green-300">Low</option>
+                <option value="Immediate">Immediate</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
               </select>
             </div>
             <div className="col-span-2">
