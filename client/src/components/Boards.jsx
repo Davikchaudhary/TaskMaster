@@ -20,14 +20,42 @@ const Boards = ({ selectedBoard }) => {
         const userId = localStorage.getItem("userId");
         if (userId) {
           const res = await API.get(`/user/${userId}`);
+          console.log(res)
           setCreatedByUname(res.data.uname); // Assuming 'uname' is the field containing the username
         }
       } catch (error) {
         console.error("Error fetching username:", error);
       }
     };
-
     fetchUsername();
+    const setTasksList = async () =>{
+      try {
+        const userId = localStorage.getItem("userId");
+        const res = await API.get(`/board/${selectedBoard.name}/tasks?userId=${userId}`);
+        const data = res.data.tasks
+        console.log(data)
+        const todotemp = data.filter((task)=>(task.status==='todo'))
+        setTasks((prev) => {
+          return { ...prev, todo:todotemp };
+        });
+        const inptemp = data.filter((task)=>(task.status==='inProgress'))
+        setTasks((prev) => {
+          return { ...prev, inProgress:inptemp };
+        });
+        const bltemp = data.filter((task)=>(task.status==='backlog'))
+        setTasks((prev) => {
+          return { ...prev, backlog:bltemp };
+        });
+        const comptemp = data.filter((task)=>(task.status==='completed'))
+        setTasks((prev) => {
+          return { ...prev, completed:comptemp };
+        });
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setTasksList();
   }, []);
 
   const handleOpenModal = (columnId) => {
