@@ -1,54 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
-    const [formData, setFormData] = useState({
-      name: taskToEdit ? taskToEdit.name : '',
-      priority: taskToEdit ? taskToEdit.priority : '',
-      description: taskToEdit ? taskToEdit.description : ''
-    });
-  
-    // Handle changes to form fields
-    const handleChange = (event) => {
-      const { name, value } = event.target;
-      setFormData(prevData => ({
-        ...prevData,
-        [name]: value
-      }));
-    };
-  
-    // Handle form submission
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      
-      const newTask = {
-        title: formData.name,
-        description: formData.description,
-        priority: formData.priority, // Use the mapped enum value
-      };
+  const [formData, setFormData] = useState({
+    title: taskToEdit ? taskToEdit.name : "",
+    priority: taskToEdit ? taskToEdit.priority : "",
+    description: taskToEdit ? taskToEdit.description : "",
+  });
 
-      console.log(newTask)
-      
-      addTask(columnId, newTask);
-      onClose();
-    };
-    
-  const priorityTag = (priority) => {
-    switch (priority) {
-      case "Immediate":
-        return "Immediate";
-      case "High":
-        return "High Priority";
-      case "Medium":
-        return "Medium Priority";
-      case "Low":
-        return "Low Priority";
-      default:
-        return "";
-    }
+  // Handle changes to form fields
+  const handleChange = (event) => {
+    const { name, value } = event.target; // Use event.target.name instead of 'title'
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-    
+
+  // Handle form submission
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const newTask = {
+      title: formData.title,
+      description: formData.description,
+      priority: formData.priority, // Use the mapped enum value
+    };
+
+    addTask(columnId, newTask);
+    onClose();
+  };
   return (
-    <div id="crud-modal" className={`fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}>
+    <div
+      id="crud-modal"
+      className={`fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}
+    >
       <div className="relative w-full max-w-md mx-auto bg-gray-700 rounded-lg shadow-lg">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-white">Create New Task</h3>
@@ -74,27 +59,35 @@ const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
         <form onSubmit={handleSubmit} className="p-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="name" // Corrected htmlFor attribute
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Task Name
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name} // Add value attribute to bind input value to state
-                onChange={handleChange} // Add onChange event to update state on input change
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
                 className="bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Type Board name..."
                 required
               />
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Priority</label>
+              <label
+                htmlFor="priority" // Corrected htmlFor attribute
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Priority
+              </label>
               <select
-                id="category"
+                id="priority"
                 name="priority"
-                value={formData.priority} // Add value attribute to bind select value to state
-                onChange={handleChange} // Add onChange event to update state on select change
+                value={formData.priority}
+                onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               >
                 <option value="">Select Priority</option>
@@ -105,12 +98,17 @@ const CreateTasks = ({ onClose, columnId, addTask, taskToEdit }) => {
               </select>
             </div>
             <div className="col-span-2">
-              <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Task Description</label>
+              <label
+                htmlFor="description" // Corrected htmlFor attribute
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Task Description
+              </label>
               <textarea
                 id="description"
                 name="description"
-                value={formData.description} // Add value attribute to bind textarea value to state
-                onChange={handleChange} // Add onChange event to update state on textarea change
+                value={formData.description}
+                onChange={handleChange}
                 rows="4"
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Write task description here"

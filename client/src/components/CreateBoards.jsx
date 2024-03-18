@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import API from '../axios';
+import React, { useState } from "react";
+import API from "../axios";
 
 const CreateBoards = ({ handleCloseModal, updateBoards }) => {
   const [closeBoard, setCloseBoard] = useState(true);
-  const [boardName, setBoardName] = useState('');
-  const userId = localStorage.getItem('userId');
+  const [boardName, setBoardName] = useState("");
+  const userId = localStorage.getItem("userId");
 
   const handleChange = (e) => {
     setBoardName(e.target.value);
@@ -13,24 +13,26 @@ const CreateBoards = ({ handleCloseModal, updateBoards }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Post the new board data to the server
       await API.post(`/user/${userId}/addboards`, { name: boardName });
-      // Update the list of boards
       updateBoards();
-      // Close the modal
       handleCloseModal();
     } catch (error) {
-      console.error('Error creating board:', error);
+      console.error("Error creating board:", error);
     }
   };
-  
+
   const handleCloseBoard = () => {
-    setCloseBoard(prevState => !prevState);
-    handleCloseModal(); // Close the modal
+    setCloseBoard((prevState) => !prevState);
+    handleCloseModal();
   };
 
   return (
-    <div id="crud-modal" className={`${closeBoard ? 'block':'hidden'} fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}>
+    <div
+      id="crud-modal"
+      className={`${
+        closeBoard ? "block" : "hidden"
+      } fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}
+    >
       <div className="relative w-full max-w-md mx-auto bg-gray-700 rounded-lg shadow-lg">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-white">Create New Board</h3>
@@ -55,19 +57,22 @@ const CreateBoards = ({ handleCloseModal, updateBoards }) => {
         </div>
         <form className="p-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
-            <div className='col col-span-2'>
-            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Board Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  onChange={handleChange}
-                  className="bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Type Board name..."
-                  required
-                />
+            <div className="col col-span-2">
+              <label
+                htmlFor="name"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Board Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                onChange={handleChange}
+                className="bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Type Board name..."
+                required
+              />
             </div>
           </div>
           <div className="mt-4">

@@ -192,7 +192,7 @@ const Boards = ({ selectedBoard }) => {
                             className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-blue-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
-                              {task.name}
+                              {task.title}
                             </h5>
                             <p className="font-normal text-gray-700 dark:text-gray-900">
                               {task.description}
@@ -201,7 +201,7 @@ const Boards = ({ selectedBoard }) => {
                               <button
                                 onClick={() =>
                                   editTask("todo", index, {
-                                    name: "Updated Task",
+                                    title: "Updated Task",
                                     description: "Updated Description",
                                   })
                                 }
@@ -286,7 +286,7 @@ const Boards = ({ selectedBoard }) => {
                             className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-red-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
-                              {task.name}
+                              {task.title}
                             </h5>
                             <p className="font-normal text-gray-700 dark:text-gray-900">
                               {task.description}
@@ -295,7 +295,7 @@ const Boards = ({ selectedBoard }) => {
                               <button
                                 onClick={() =>
                                   editTask("backlog", index, {
-                                    name: "Updated Task",
+                                    title: "Updated Task",
                                     description: "Updated Description",
                                   })
                                 }
@@ -382,7 +382,7 @@ const Boards = ({ selectedBoard }) => {
                             className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
-                              {task.name}
+                              {task.title}
                             </h5>
                             <p className="font-normal text-gray-700 dark:text-gray-900">
                               {task.description}
@@ -391,7 +391,7 @@ const Boards = ({ selectedBoard }) => {
                               <button
                                 onClick={() =>
                                   editTask("inProgress", index, {
-                                    name: "Updated Task",
+                                    title: "Updated Task",
                                     description: "Updated Description",
                                   })
                                 }
@@ -478,7 +478,7 @@ const Boards = ({ selectedBoard }) => {
                             className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-green-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
-                              {task.name}
+                              {task.title}
                             </h5>
                             <p className="font-normal text-gray-700 dark:text-gray-900">
                               {task.description}
@@ -487,7 +487,7 @@ const Boards = ({ selectedBoard }) => {
                               <button
                                 onClick={() =>
                                   editTask("completed", index, {
-                                    name: "Updated Task",
+                                    title: "Updated Task",
                                     description: "Updated Description",
                                   })
                                 }

@@ -88,7 +88,8 @@ const Home = () => {
         selectedBoard={selectedBoard}
         setOpenEditBoards={setOpenEditBoards}
       />
-      {/* Only render the Boards component when a board is selected */}
+      <h1 className="">Select a board to start using TaskMaster</h1>
+  
       {selectedBoard && <Boards selectedBoard={selectedBoard} />}
       {openCreateBoards && (
         <CreateBoards
