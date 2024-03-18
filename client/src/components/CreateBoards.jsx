@@ -33,12 +33,12 @@ const CreateBoards = ({ handleCloseModal, updateBoards }) => {
         closeBoard ? "block" : "hidden"
       } fixed top-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50`}
     >
-      <div className="relative w-full max-w-md mx-auto bg-gray-700 rounded-lg shadow-lg">
+      <div className="relative w-full max-w-md mx-auto dark:bg-gray-700 bg-gray-100  rounded-lg shadow-lg">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="text-lg font-semibold text-white">Create New Board</h3>
+          <h3 className="text-lg font-semibold text-black dark:text-white">Create New Board</h3>
           <button
             onClick={handleCloseBoard}
-            className="text-gray-400 hover:text-gray-700 focus:outline-none"
+            className="text-gray-400  hover:text-gray-700 focus:outline-none"
           >
             <svg
               className="w-5 h-5"
