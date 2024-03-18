@@ -91,13 +91,13 @@ const Sidebar = ({
           </li>
         </ul>
         {showBoards && (
-          <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-white dark:bg-gray-800">
+          <div className="px-3 pb-4 border-t-2 overflow-y-auto bg-gray-800 dark:bg-gray-800">
             <ul>
               {createdBoards.map((board, index) => (
                 <li key={index}>
                   <div className="flex">
                     <button
-                      className="flex text-center justify-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                      className="flex text-center justify-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
                       onClick={() => setSelectedBoard(board)}
                     >
                       {board.name}

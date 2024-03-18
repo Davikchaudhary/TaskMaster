@@ -28,7 +28,7 @@ const Navbar = ({ handleHamburger, userDetail }) => {
         <div className="flex items-center justify-start">
           <button
             onClick={handleHamburger}
-            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-700 dark:text-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           >
             <svg
               className="w-6 h-6"
@@ -67,18 +67,18 @@ const Navbar = ({ handleHamburger, userDetail }) => {
             <div
               className={`${
                 openUserDetails ? "block" : "hidden"
-              } z-50 absolute lg:my-4 lg:-mx-10  text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
+              } z-50 absolute lg:my-4 lg:-mx-10  text-base list-none bg-gray-700 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
               id="dropdown-user`}
             >
               <div className="px-4 py-3" role="none">
                 <p
-                  className="text-sm text-gray-900 dark:text-white"
+                  className="text-sm overflow-auto w-full text-white dark:text-white"
                   role="none"
                 >
                   {userDetail.uname}
                 </p>
                 <p
-                  className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                  className="text-sm overflow-auto w-10 font-medium text-white truncate dark:text-gray-300"
                   role="none"
                 >
                   {userDetail.email}
