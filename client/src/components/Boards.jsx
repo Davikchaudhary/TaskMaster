@@ -100,8 +100,9 @@ const Boards = ({ selectedBoard }) => {
 
   const deleteTask = async(columnId, taskIndex,taskId) => {
     try {
+      const userId = localStorage.getItem("userId");
       console.log(taskId)
-      await API.delete(`/board/${selectedBoard.name}/tasks/${taskId}`)
+      await API.delete(`/board/${selectedBoard.name}/tasks/${taskId}?userId=${userId}`)
       
     } catch (error) {
       console.log(error)
@@ -222,8 +223,6 @@ const Boards = ({ selectedBoard }) => {
                       key={index}
                       draggableId={`todo-${index}`}
                       index={index}
-                      taskId = {task._id}
-                      task={task}
                     >
                       {(provided) => (
                         <div
