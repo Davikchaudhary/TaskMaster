@@ -67,7 +67,7 @@ const Navbar = ({ handleHamburger, userDetail }) => {
             <div
               className={`${
                 openUserDetails ? "block" : "hidden"
-              } z-50 absolute lg:my-4 lg:-mx-10  text-base list-none bg-gray-700 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
+              } z-50 absolute w-82 lg:my-4  lg:-mx-32  sm:my-10 sm:-mx-96 text-base list-none bg-gray-700 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600'
               id="dropdown-user`}
             >
               <div className="px-4 py-3" role="none">
@@ -78,7 +78,7 @@ const Navbar = ({ handleHamburger, userDetail }) => {
                   {userDetail.uname}
                 </p>
                 <p
-                  className="text-sm overflow-auto w-10 font-medium text-white truncate dark:text-gray-300"
+                  className="text-sm overflow-auto w-full font-medium text-white truncate dark:text-gray-300"
                   role="none"
                 >
                   {userDetail.email}
