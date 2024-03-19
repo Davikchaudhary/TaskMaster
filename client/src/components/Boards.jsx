@@ -98,7 +98,14 @@ const Boards = ({ selectedBoard }) => {
 
   const [taskToEdit, setTaskToEdit] = useState(null);
 
-  const deleteTask = (columnId, taskIndex) => {
+  const deleteTask = async(columnId, taskIndex,taskId) => {
+    try {
+      console.log(taskId)
+      await API.delete(`/board/${selectedBoard.name}/tasks/${taskId}`)
+      
+    } catch (error) {
+      console.log(error)
+    }
     setTasks((prevTasks) => {
       const updatedTasks = { ...prevTasks };
       updatedTasks[columnId].splice(taskIndex, 1);
@@ -106,7 +113,7 @@ const Boards = ({ selectedBoard }) => {
     });
   };
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async(result) => {
     const { source, destination } = result;
     if (
       !destination ||
@@ -115,11 +122,17 @@ const Boards = ({ selectedBoard }) => {
     ) {
       return;
     }
+    console.log(source,destination)
+    const taskData = {}
+    const userId = localStorage.getItem("userId");
+    
     const updatedTasks = { ...tasks };
     const movedTask = updatedTasks[source.droppableId].splice(
       source.index,
       1
     )[0];
+    await API.put(`/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,{name:movedTask.title,description:movedTask.description,priority:movedTask.priority,status:destination.droppableId})
+    console.log(movedTask)
     updatedTasks[destination.droppableId].splice(
       destination.index,
       0,
@@ -209,6 +222,8 @@ const Boards = ({ selectedBoard }) => {
                       key={index}
                       draggableId={`todo-${index}`}
                       index={index}
+                      taskId = {task._id}
+                      task={task}
                     >
                       {(provided) => (
                         <div
@@ -236,7 +251,7 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Edit Task
                               </button>
-                              <button onClick={() => deleteTask("todo", index)}>
+                              <button onClick={() => deleteTask("todo", index,task._id)}>
                                 Delete Task
                               </button>
                             </div>
