@@ -56,7 +56,7 @@ const Boards = ({ selectedBoard }) => {
       }
     }
     setTasksList();
-  }, []);
+  }, [selectedBoard]);
 
   const handleOpenModal = (columnId) => {
     setIsModalOpen(true);
