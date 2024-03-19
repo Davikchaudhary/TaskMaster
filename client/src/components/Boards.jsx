@@ -250,7 +250,7 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Edit Task
                               </button>
-                              <button onClick={() => deleteTask("todo", index)}>
+                              <button onClick={() => deleteTask("todo", index,task._id)}>
                                 Delete Task
                               </button>
                             </div>
@@ -347,7 +347,7 @@ const Boards = ({ selectedBoard }) => {
                               </button>
                               <button
                               className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("backlog", index)}
+                                onClick={() => deleteTask("backlog", index,task._id)}
                               >
                                 Delete Task
                               </button>
@@ -445,7 +445,7 @@ const Boards = ({ selectedBoard }) => {
                               </button>
                               <button
                               className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("inProgress", index)}
+                                onClick={() => deleteTask("inProgress", index,task._id)}
                               >
                                 Delete Task
                               </button>
@@ -543,7 +543,7 @@ const Boards = ({ selectedBoard }) => {
                               </button>
                               <button
                               className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("completed", index)}
+                                onClick={() => deleteTask("completed", index,task._id)}
                               >
                                 Delete Task
                               </button>
