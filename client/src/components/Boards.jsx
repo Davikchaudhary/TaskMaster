@@ -149,14 +149,14 @@ const Boards = ({ selectedBoard }) => {
         <div className="p-4 mt-20 sm:ml-64">
           {selectedBoard && (
             <div className="flex flex-col space-y-4">
-              <h2 className="mb-4 text-2xl text-center p-2 font-bold">
-                {selectedBoard.name}
+              <h2 className="mb-4 text-2xl text-center p-2 font-bold dark:bg-rose-100 bg-rose-100">
+               <span className="font-light"> Board Name: </span> {selectedBoard.name}
               </h2>
-              <div className="flex justify-between">
+              <div className="flex justify-between  flex-col dark:bg-lime-100 bg-lime-100 p-2 ">
+                <h3 className="font-light">Created by: {createdByUname}</h3>
                 <h3 className="font-extralight">
                   Created on: {selectedBoard.createdAt}
                 </h3>
-                <h3 className="font-light">Created by: {createdByUname}</h3>
                 <h3 className="font-extralight">
                   last modified on: {selectedBoard.lastModifiedAt}
                 </h3>
@@ -217,7 +217,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-blue-300`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 bg-blue-300 rounded-lg shadow hover:bg-blue-100 dark:bg-blue-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.title}
@@ -226,7 +226,7 @@ const Boards = ({ selectedBoard }) => {
                               {task.description}
                             </p>
                             <div className="space-x-5 text-end">
-                              <button
+                              <button className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
                                   editTask("todo", index, {
                                     title: "Updated Task",
@@ -236,7 +236,7 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Edit Task
                               </button>
-                              <button onClick={() => deleteTask("todo", index)}>
+                              <button className="bg-gray-700 dark:text-white text-white dark:bg-gray-700  dark:hover:bg-gray-500 hover:bg-gray-500 p-2 rounded-md" onClick={() => deleteTask("todo", index)}>
                                 Delete Task
                               </button>
                             </div>
@@ -311,7 +311,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-red-300`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 bg-red-300 rounded-lg shadow hover:bg-red-100 dark:bg-red-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.title}
@@ -321,6 +321,7 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
+                              className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
                                   editTask("backlog", index, {
                                     title: "Updated Task",
@@ -331,13 +332,14 @@ const Boards = ({ selectedBoard }) => {
                                 Edit Task
                               </button>
                               <button
+                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() => deleteTask("backlog", index)}
                               >
                                 Delete Task
                               </button>
                             </div>
                             <div className="flex justify-end mt-2">
-                              <span className="px-2 py-1 text-xs font-semibold text-orange-500 bg-orange-200 rounded-md mr-1">
+                              <span className="px-2 py-1 text-xs font-semibold text-orange-500 bg-red-200 rounded-md mr-1">
                                 {task.priority && (
                                   <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
                                     {priorityTag(task.priority)}
@@ -407,7 +409,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-orange-300`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg bg-orange-300 shadow hover:bg-orange-100 dark:bg-orange-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.title}
@@ -417,6 +419,7 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
+                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
                                   editTask("inProgress", index, {
                                     title: "Updated Task",
@@ -427,13 +430,14 @@ const Boards = ({ selectedBoard }) => {
                                 Edit Task
                               </button>
                               <button
+                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() => deleteTask("inProgress", index)}
                               >
                                 Delete Task
                               </button>
                             </div>
                             <div className="flex justify-end mt-2">
-                              <span className="px-2 py-1 text-xs font-semibold text-orange-500 bg-orange-200 rounded-md mr-1">
+                              <span className="px-2 py-1 text-xs font-semibold text-orange-500  bg-orange-200 rounded-md mr-1">
                                 {task.priority && (
                                   <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
                                     {priorityTag(task.priority)}
@@ -503,7 +507,7 @@ const Boards = ({ selectedBoard }) => {
                           {...provided.dragHandleProps}
                         >
                           <div
-                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg shadow hover:bg-blue-100 dark:bg-green-300`}
+                            className={`flex flex-col w-full p-2 mt-2 border border-gray-200 rounded-lg bg-green-300 shadow hover:bg-green-100 dark:bg-green-300`}
                           >
                             <h5 className="mb-2 text-2xl font-bold text-center text-gray-900 dark:text-black">
                               {task.title}
@@ -513,6 +517,7 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
+                              className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
                                   editTask("completed", index, {
                                     title: "Updated Task",
@@ -523,13 +528,14 @@ const Boards = ({ selectedBoard }) => {
                                 Edit Task
                               </button>
                               <button
+                              className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() => deleteTask("completed", index)}
                               >
                                 Delete Task
                               </button>
                             </div>
                             <div className="flex justify-end mt-2">
-                              <span className="px-2 py-1 text-xs font-semibold text-indigo-500 bg-indigo-200 rounded-md mr-1">
+                              <span className="px-2 py-1 text-xs font-semibold text-indigo-500 bg-green-200 rounded-md mr-1">
                                 {task.priority && (
                                   <span className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md mr-1">
                                     {priorityTag(task.priority)}
