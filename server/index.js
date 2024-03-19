@@ -187,46 +187,48 @@ app.get('/board/:boardName/tasks', taskapi.getTasks);
 app.get('/tasks/:taskId', taskapi.getTaskById);
 
 
-app.post('/board/:boardId/addUsers', async (req, res) => {
+
+app.post('/board/:boardId/addBoardToUsers', async (req, res) => {
   const { userId } = req.query;
   const { boardId } = req.params;
-  const { users } = req.body;
+  const { userIds} = req.body;
 
   try {
-    // Find the board by ID and check if the user has permission
-    const board = await Board.findById(boardId);
+    // Find the user by ID to ensure user exists and has permission
+    const user = await User.findById(userId);
+    const board=await Board.findById(boardId);
 
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if the user has permission to modify the board
-    if (board.createdBy !== userId) {
-      return res.status(403).json({ error: 'User does not have permission to modify the board' });
-    }
+    // Check if the user has permission to modify boards
+    // This can be customized based on your application's logic
+    // if (board.createdBy!=userId) {
+    //   return res.status(403).json({ error: 'User does not have permission to modify boards' });
+    // }
 
-    // Add the users to the board
-    for (const userId of users) {
-      // Check if the user exists
-      const user = await User.findById(userId);
+    // Loop through each userId in the list
+    for (const id of userIds) {
+      // Find the user by their ID
+      const targetUser = await User.findById(id);
 
-      if (!user) {
+      if (!targetUser) {
         // User not found, skip and continue
-        console.log(`User with ID ${userId} not found`);
+        console.log(`User with ID ${id} not found`);
         continue;
       }
 
-      // Add the user to the board's list of members if not already added
-      if (!board.members.includes(userId)) {
-        board.members.push(userId);
+      // Check if the boardId is already in the user's list of boards
+      if (!targetUser.boards.includes(boardId)) {
+        // Add the boardId to the user's list of boards
+        targetUser.boards.push(boardId);
+        await targetUser.save();
       }
     }
 
-    // Save the updated board
-    await board.save();
-
-    console.log('Users added to the board successfully');
-    res.status(200).json({ message: 'Users added to the board successfully', board });
+    console.log('Board added to users successfully');
+    res.status(200).json({ message: 'Board added to users successfully' });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });
