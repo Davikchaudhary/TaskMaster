@@ -124,7 +124,6 @@ const Boards = ({ selectedBoard }) => {
       return;
     }
     console.log(source,destination)
-    const taskData = {}
     const userId = localStorage.getItem("userId");
     
     const updatedTasks = { ...tasks };
