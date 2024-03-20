@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import closepic from "../assets/images/close.svg";
 import editpic from "../assets/images/edit.svg";
-import API from "../axios"; // Import API functions
+import API from "../axios"; // Import API functions;
+import invitePic from '../assets/images/invitePic.svg';
+import createBoardPic from '../assets/images/createBoard.svg';
 
 
 const Sidebar = ({
@@ -56,16 +58,7 @@ const Sidebar = ({
               onClick={handleAddBoard}
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
-              <svg
-                className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 22 21"
-              >
-                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
-                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
-              </svg>
+              <img src={createBoardPic} className="h-6 w-6"/>
               <span className="ms-3">Create Boards</span>
             </button>
           </li>
@@ -77,15 +70,19 @@ const Sidebar = ({
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
               <svg
-                className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 22 21"
-              >
-                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
-                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
-              </svg>
+  className="w-5 h-5"
+  fill="none"
+  viewBox="0 0 24 24"
+  stroke="currentColor"
+>
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    d="M10 21h4v-4h-4v4zm-7-7h4v-4H3v4zm0-5h4V5H3v4zm7 7h4v-4h-4v4zM3 3v4h4V3H3zm14 4h4V3h-4v4zm0 5h4v-4h-4v4zM10 3h4V3h-4v4zm7 14v-4h-4v4h4zm-7 4v-4H3v4h4z"
+  />
+</svg>
+
               <span className="ms-3">
                 {showBoards ? "Hide" : "Show"} Boards
               </span>
@@ -129,16 +126,8 @@ const Sidebar = ({
               onClick={handleInviteModal}
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
-              <svg
-                className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 22 21"
-              >
-                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
-                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
-              </svg>
+              <img className="h-6 w-6" src={invitePic}/>
+
               <span className="ms-3">Invite</span>
             </button>
           </li>
