@@ -5,6 +5,7 @@ import Sidebar from "../../components/Sidebar";
 import Boards from "../../components/Boards";
 import CreateBoards from "../../components/CreateBoards";
 import EditBoards from "../../components/EditBoards";
+import Invite from "./Invite";
 
 const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
@@ -14,6 +15,7 @@ const Home = () => {
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [userDetail, setUserDetail] = useState({});
   const [error, setError] = useState("");
+  const [inviteModal, setInviteModal] = useState(false)
 
   const userId = localStorage.getItem("userId");
 
@@ -52,14 +54,6 @@ const Home = () => {
     setOpenCreateBoards(false); // Close the create board modal
   };
 
-  const handleEditBoard = (board) => {
-    setSelectedBoard(board);
-    setOpenEditBoards(true); // Open the edit board modal
-  };
-
-  const handleEditBoardClose = () => {
-    setOpenEditBoards(false); // Close the edit board modal
-  };
 
   const handleCloseModal = () => {
     setOpenCreateBoards(false);
