@@ -5,6 +5,7 @@ import Sidebar from "../../components/Sidebar";
 import Boards from "../../components/Boards";
 import CreateBoards from "../../components/CreateBoards";
 import EditBoards from "../../components/EditBoards";
+import Invite from "../../components/Invite";
 
 const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
@@ -14,6 +15,7 @@ const Home = () => {
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [userDetail, setUserDetail] = useState({});
   const [error, setError] = useState("");
+  const [inviteModal, setInviteModal] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
@@ -52,15 +54,6 @@ const Home = () => {
     setOpenCreateBoards(false); // Close the create board modal
   };
 
-  const handleEditBoard = (board) => {
-    setSelectedBoard(board);
-    setOpenEditBoards(true); // Open the edit board modal
-  };
-
-  const handleEditBoardClose = () => {
-    setOpenEditBoards(false); // Close the edit board modal
-  };
-
   const handleCloseModal = () => {
     setOpenCreateBoards(false);
     getBoards(); // Fetch updated boards when a new board is created
@@ -76,6 +69,11 @@ const Home = () => {
     handleCreateBoardClose(); // Close the create board modal after creating a board
   };
 
+  // Function to open invite modal
+  const handleInviteModal = () => {
+    setInviteModal(true);
+  };
+
   return (
     <>
       <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
@@ -87,9 +85,9 @@ const Home = () => {
         updateBoards={updateBoards}
         selectedBoard={selectedBoard}
         setOpenEditBoards={setOpenEditBoards}
+        handleInviteModal={handleInviteModal} 
       />
-      <h1 className="">Select a board to start using TaskMaster</h1>
-  
+
       {selectedBoard && <Boards selectedBoard={selectedBoard} />}
       {openCreateBoards && (
         <CreateBoards
@@ -97,11 +95,19 @@ const Home = () => {
           updateBoards={updateBoards}
         />
       )}
+
       {openEditBoards && (
         <EditBoards
           handleEditBoardClose={() => setOpenEditBoards(false)}
           updateBoards={updateBoards}
           selectedBoard={selectedBoard}
+        />
+      )}
+
+      {inviteModal && (
+        <Invite 
+          handleInviteModal={() => setInviteModal(false)} 
+          inviteModal={inviteModal} 
         />
       )}
     </>

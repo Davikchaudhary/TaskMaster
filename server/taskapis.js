@@ -55,7 +55,7 @@ const createTask = async (req, res) => {
   const updateTask = async (req, res) => {
     const { userId } = req.query;
     const { boardName, taskId } = req.params;
-    const { name, description, priority, status } = req.body;
+    const { title, description, priority, status } = req.body;
   
     try {
       // Find the board by name and user
@@ -78,13 +78,33 @@ const createTask = async (req, res) => {
         return res.status(404).json({ error: 'Task not found for the board' });
       }
   
-      // Find and update the task
-      const updatedTask = await Task.findByIdAndUpdate(
-        taskId,
-        { name, description, priority, status },
-        { new: true }
-      );
+      // Find the task to update
+      const updatedTask = await Task.findById(taskId);
+  
+      if (!updatedTask) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+  
+      // Update only the provided fields
+      if (title) {
+        updatedTask.title = title;
+      }
+      if (description) {
+        updatedTask.description = description;
+      }
+      if (priority) {
+        updatedTask.priority = priority;
+      }
+
+      if (status) {
+        updatedTask.status = status;
+      }
+  
+      // Set the updated timestamp
       updatedTask.updatedAt = moment().format('DD MMM YYYY HH:mm:ss');
+  
+      // Save the updated task
+      await updatedTask.save();
   
       // Remove the task from its current column
       for (const col of Object.keys(board.columns)) {
@@ -96,8 +116,8 @@ const createTask = async (req, res) => {
       }
   
       // Update the task's column in the board
-      if (board.columns[status]) {
-        board.columns[status].push(updatedTask._id);
+      if (board.columns[updatedTask.status]) {
+        board.columns[updatedTask.status].push(updatedTask._id);
       }
   
       // Save the updated board
@@ -110,6 +130,7 @@ const createTask = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
+  
   
 //   exports.updateTask = updateTask;
 

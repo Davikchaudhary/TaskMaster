@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CreateTasks from "./CreateTasks";
+import EditTask from "./EditTask";
 import API from "../axios";
 
 const Boards = ({ selectedBoard }) => {
@@ -11,16 +12,48 @@ const Boards = ({ selectedBoard }) => {
     inProgress: [],
     completed: [],
   });
+  const [datachange,setDatachange] = useState(false);
+  
   const [columnId, setColumnId] = useState("");
   const [createdByUname, setCreatedByUname] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState(null);
 
+  async function setTasksList  () {
+    try {
+      const userId = localStorage.getItem("userId");
+      const res = await API.get(
+        `/board/${selectedBoard.name}/tasks?userId=${userId}`
+      );
+      const data = res.data.tasks;
+      console.log(data);
+      const todotemp = data.filter((task) => task.status === "todo");
+      setTasks((prev) => {
+        return { ...prev, todo: todotemp };
+      });
+      const inptemp = data.filter((task) => task.status === "inProgress");
+      setTasks((prev) => {
+        return { ...prev, inProgress: inptemp };
+      });
+      const bltemp = data.filter((task) => task.status === "backlog");
+      setTasks((prev) => {
+        return { ...prev, backlog: bltemp };
+      });
+      const comptemp = data.filter((task) => task.status === "completed");
+      setTasks((prev) => {
+        return { ...prev, completed: comptemp };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const userId = localStorage.getItem("userId");
         if (userId) {
           const res = await API.get(`/user/${userId}`);
-          console.log(res)
+          console.log(res);
           setCreatedByUname(res.data.uname); // Assuming 'uname' is the field containing the username
         }
       } catch (error) {
@@ -28,35 +61,10 @@ const Boards = ({ selectedBoard }) => {
       }
     };
     fetchUsername();
-    const setTasksList = async () =>{
-      try {
-        const userId = localStorage.getItem("userId");
-        const res = await API.get(`/board/${selectedBoard.name}/tasks?userId=${userId}`);
-        const data = res.data.tasks
-        console.log(data)
-        const todotemp = data.filter((task)=>(task.status==='todo'))
-        setTasks((prev) => {
-          return { ...prev, todo:todotemp };
-        });
-        const inptemp = data.filter((task)=>(task.status==='inProgress'))
-        setTasks((prev) => {
-          return { ...prev, inProgress:inptemp };
-        });
-        const bltemp = data.filter((task)=>(task.status==='backlog'))
-        setTasks((prev) => {
-          return { ...prev, backlog:bltemp };
-        });
-        const comptemp = data.filter((task)=>(task.status==='completed'))
-        setTasks((prev) => {
-          return { ...prev, completed:comptemp };
-        });
-        
-      } catch (error) {
-        console.log(error);
-      }
-    }
+
+    
     setTasksList();
-  }, [selectedBoard]);
+  }, [selectedBoard, datachange]);
 
   const handleOpenModal = (columnId) => {
     setIsModalOpen(true);
@@ -85,29 +93,15 @@ const Boards = ({ selectedBoard }) => {
     }
   };
 
-  const editTask = async(columnId, taskIndex, updatedTask) => {
-    //await API.put(`/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,{name:movedTask.title,description:movedTask.description,priority:movedTask.priority,status:destination.droppableId})
-
-    setTasks((prevTasks) => {
-      const updatedTasks = { ...prevTasks };
-      updatedTasks[columnId][taskIndex] = updatedTask;
-      return updatedTasks;
-    });
-    setIsModalOpen(true);
-    setColumnId(columnId);
-    setTaskToEdit(updatedTask);
-  };
-
-  const [taskToEdit, setTaskToEdit] = useState(null);
-
-  const deleteTask = async(columnId, taskIndex,taskId) => {
+  const deleteTask = async (columnId, taskIndex, taskId) => {
     try {
       const userId = localStorage.getItem("userId");
-      console.log(taskId)
-      await API.delete(`/board/${selectedBoard.name}/tasks/${taskId}?userId=${userId}`)
-      
+      console.log(taskId);
+      await API.delete(
+        `/board/${selectedBoard.name}/tasks/${taskId}?userId=${userId}`
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     setTasks((prevTasks) => {
       const updatedTasks = { ...prevTasks };
@@ -116,7 +110,7 @@ const Boards = ({ selectedBoard }) => {
     });
   };
 
-  const onDragEnd = async(result) => {
+  const onDragEnd = async (result) => {
     const { source, destination } = result;
     if (
       !destination ||
@@ -125,16 +119,24 @@ const Boards = ({ selectedBoard }) => {
     ) {
       return;
     }
-    console.log(source,destination)
+    console.log(source, destination);
     const userId = localStorage.getItem("userId");
-    
+
     const updatedTasks = { ...tasks };
     const movedTask = updatedTasks[source.droppableId].splice(
       source.index,
       1
     )[0];
-    await API.put(`/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,{name:movedTask.title,description:movedTask.description,priority:movedTask.priority,status:destination.droppableId})
-    console.log(movedTask)
+    await API.put(
+      `/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,
+      {
+        title: movedTask.title,
+        description: movedTask.description,
+        priority: movedTask.priority,
+        status: destination.droppableId,
+      }
+    );
+    console.log(movedTask);
     updatedTasks[destination.droppableId].splice(
       destination.index,
       0,
@@ -158,6 +160,12 @@ const Boards = ({ selectedBoard }) => {
     }
   };
 
+  const handleEditTask = (columnId, taskIndex, task) => {
+    setIsEditModalOpen(true);
+    setTaskToEdit({ columnId, taskIndex, task });
+  
+  };
+
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -165,7 +173,8 @@ const Boards = ({ selectedBoard }) => {
           {selectedBoard && (
             <div className="flex flex-col space-y-4">
               <h2 className="mb-4 text-2xl text-center p-2 font-bold dark:bg-rose-100 bg-rose-100">
-               <span className="font-light"> Board Name: </span> {selectedBoard.name}
+                <span className="font-light"> Board Name: </span>{" "}
+                {selectedBoard.name}
               </h2>
               <div className="flex justify-between  flex-col dark:bg-lime-100 bg-lime-100 p-2 ">
                 <h3 className="font-light">Created by: {createdByUname}</h3>
@@ -241,17 +250,21 @@ const Boards = ({ selectedBoard }) => {
                               {task.description}
                             </p>
                             <div className="space-x-5 text-end">
-                              <button className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                              <button
+                                className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
-                                  editTask("todo", index, {
-                                    title: "Updated Task",
-                                    description: "Updated Description",
-                                  })
+                                  handleEditTask(columnId, index, task)
                                 }
                               >
                                 Edit Task
                               </button>
-                              <button onClick={() => deleteTask("todo", index,task._id)}>
+
+                              <button
+                                className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                                onClick={() =>
+                                  deleteTask("todo", index, task._id)
+                                }
+                              >
                                 Delete Task
                               </button>
                             </div>
@@ -336,19 +349,19 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
-                              className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                                className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
-                                  editTask("backlog", index, {
-                                    title: "Updated Task",
-                                    description: "Updated Description",
-                                  })
+                                  handleEditTask(columnId, index, task)
                                 }
                               >
                                 Edit Task
                               </button>
+
                               <button
-                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("backlog", index,task._id)}
+                                className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                                onClick={() =>
+                                  deleteTask("backlog", index, task._id)
+                                }
                               >
                                 Delete Task
                               </button>
@@ -434,19 +447,19 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
-                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                                className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
-                                  editTask("inProgress", index, {
-                                    title: "Updated Task",
-                                    description: "Updated Description",
-                                  })
+                                  handleEditTask(columnId, index, task)
                                 }
                               >
                                 Edit Task
                               </button>
+
                               <button
-                              className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("inProgress", index,task._id)}
+                                className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
+                                onClick={() =>
+                                  deleteTask("inProgress", index, task._id)
+                                }
                               >
                                 Delete Task
                               </button>
@@ -532,19 +545,19 @@ const Boards = ({ selectedBoard }) => {
                             </p>
                             <div className="space-x-5 text-end">
                               <button
-                              className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
+                                className="bg-gray-700 dark:text-white text-white dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md"
                                 onClick={() =>
-                                  editTask("completed", index, {
-                                    title: "Updated Task",
-                                    description: "Updated Description",
-                                  })
+                                  handleEditTask(columnId, index, task)
                                 }
                               >
                                 Edit Task
                               </button>
+
                               <button
-                              className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
-                                onClick={() => deleteTask("completed", index,task._id)}
+                                className="bg-gray-700 dark:text-white  dark:hover:bg-gray-500 hover:bg-gray-500 text-white dark:bg-gray-700 p-2 rounded-md"
+                                onClick={() =>
+                                  deleteTask("completed", index, task._id)
+                                }
                               >
                                 Delete Task
                               </button>
@@ -573,7 +586,18 @@ const Boards = ({ selectedBoard }) => {
               onClose={() => setIsModalOpen(false)}
               columnId={columnId}
               addTask={addTask}
+            />
+          )}
+
+          {isEditModalOpen && taskToEdit && (
+            <EditTask
+              isEditModalOpen={isEditModalOpen}
               taskToEdit={taskToEdit}
+              closeEditModal={() => setIsEditModalOpen(false)}
+              selectedBoard={selectedBoard}
+              setDatachange={setDatachange}
+              datachange = {datachange}
+              
             />
           )}
         </div>
