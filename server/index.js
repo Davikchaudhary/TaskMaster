@@ -248,3 +248,13 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+app.get('/Boards', async (req, res) => {
+  try {
+    const users = await Board.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
