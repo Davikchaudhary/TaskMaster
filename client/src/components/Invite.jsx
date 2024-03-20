@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import API from "../axios";
 const Invite = ({ handleInviteModal, inviteModal }) => {
   const [users,setusers] = useState([]);
+  const [boards,setBoards] = useState([])
   useEffect(()=>{
     const setuserlist = async()=>{
-      try{const data = await API.get('/users');
-      setusers(data.data)
+      try{
+        const data = await API.get('/users');
+        const boards = await API.get('/Boards')
+        setBoards(boards.data)
+        setusers(data.data)
       ;}
       catch(error){
         console.log(error)
@@ -13,7 +17,7 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
     }
     setuserlist();
   },[])
-  console.log(users)
+  console.log(boards)
   return (
     <>
       <div
@@ -66,7 +70,10 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
                 </label>
                 <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                   <option value="">Select Boards</option>
-                  <option></option>
+                  {boards.map((board)=>{
+                      return(
+                      <option>{board.name}</option>);
+                    })}
                 </select>
               </div>
               <div className="mt-4">
