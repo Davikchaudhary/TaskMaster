@@ -28,7 +28,7 @@ const Navbar = ({ handleHamburger, userDetail }) => {
         <div className="flex items-center justify-start">
           <button
             onClick={handleHamburger}
-            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-700 dark:text-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           >
             <svg
               className="w-6 h-6"
