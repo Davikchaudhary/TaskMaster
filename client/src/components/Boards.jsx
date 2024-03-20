@@ -85,7 +85,9 @@ const Boards = ({ selectedBoard }) => {
     }
   };
 
-  const editTask = (columnId, taskIndex, updatedTask) => {
+  const editTask = async(columnId, taskIndex, updatedTask) => {
+    //await API.put(`/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,{name:movedTask.title,description:movedTask.description,priority:movedTask.priority,status:destination.droppableId})
+
     setTasks((prevTasks) => {
       const updatedTasks = { ...prevTasks };
       updatedTasks[columnId][taskIndex] = updatedTask;
