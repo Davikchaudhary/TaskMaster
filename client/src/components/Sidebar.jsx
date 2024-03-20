@@ -12,6 +12,7 @@ const Sidebar = ({
   updateBoards,
   selectedBoard,
   setOpenEditBoards,
+  handleInviteModal
 }) => {
   const [showBoards, setShowBoards] = useState(false);
 
@@ -125,7 +126,7 @@ const Sidebar = ({
              <ul className="space-y-2 mt-2 font-medium">
           <li>
             <button
-              
+              onClick={handleInviteModal}
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
               <svg

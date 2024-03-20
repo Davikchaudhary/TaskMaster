@@ -69,6 +69,7 @@ const Home = () => {
     handleCreateBoardClose(); // Close the create board modal after creating a board
   };
 
+  // Function to open invite modal
   const handleInviteModal = () => {
     setInviteModal(true);
   };
@@ -84,6 +85,7 @@ const Home = () => {
         updateBoards={updateBoards}
         selectedBoard={selectedBoard}
         setOpenEditBoards={setOpenEditBoards}
+        handleInviteModal={handleInviteModal} 
       />
 
       {selectedBoard && <Boards selectedBoard={selectedBoard} />}
@@ -104,7 +106,8 @@ const Home = () => {
 
       {inviteModal && (
         <Invite 
-          handleInviteModal={handleInviteModal}
+          handleInviteModal={() => setInviteModal(false)} 
+          inviteModal={inviteModal} 
         />
       )}
     </>
