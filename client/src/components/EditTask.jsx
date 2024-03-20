@@ -1,23 +1,46 @@
-import React, { useState } from "react";
-
-const EditTask = ({ isEditModalOpen, taskToEdit, closeEditModal }) => {
+import React, { useEffect, useState } from "react";
+import API from "../axios";
+const EditTask = ({ isEditModalOpen, taskToEdit, closeEditModal,selectedBoard,setDatachange,datachange }) => {
+  const [edit,setEdit] = useState(false);
   const [formData, setFormData] = useState({
-    title: taskToEdit.title,
-    priority: taskToEdit.priority,
-    description: taskToEdit.description,
+    id:taskToEdit.task._id,
+    title: taskToEdit.task.title,
+    priority: taskToEdit.task.priority,
+    description: taskToEdit.task.description,
+    status:taskToEdit.task.status
   });
+  console.log(taskToEdit)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name,value)
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
+    
   };
-
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async(e) => {
+    
     e.preventDefault();
+    console.log(formData)
+    const userId = localStorage.getItem("userId");
+    try{
+      await API.put(
+      `/board/${selectedBoard.name}/tasks/${formData.id}?userId=${userId}`,
+      {
+        title: formData.title,
+        description: formData.description,
+        priority: formData.priority,
+        status: formData.status,
+      }
 
+    );
+      setDatachange(!datachange)}
+    catch(error){
+      console.log(error)
+    }
     closeEditModal();
   };
 

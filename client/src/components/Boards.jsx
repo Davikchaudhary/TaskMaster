@@ -12,11 +12,41 @@ const Boards = ({ selectedBoard }) => {
     inProgress: [],
     completed: [],
   });
+  const [datachange,setDatachange] = useState(false);
+  
   const [columnId, setColumnId] = useState("");
   const [createdByUname, setCreatedByUname] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
 
+  async function setTasksList  () {
+    try {
+      const userId = localStorage.getItem("userId");
+      const res = await API.get(
+        `/board/${selectedBoard.name}/tasks?userId=${userId}`
+      );
+      const data = res.data.tasks;
+      console.log(data);
+      const todotemp = data.filter((task) => task.status === "todo");
+      setTasks((prev) => {
+        return { ...prev, todo: todotemp };
+      });
+      const inptemp = data.filter((task) => task.status === "inProgress");
+      setTasks((prev) => {
+        return { ...prev, inProgress: inptemp };
+      });
+      const bltemp = data.filter((task) => task.status === "backlog");
+      setTasks((prev) => {
+        return { ...prev, backlog: bltemp };
+      });
+      const comptemp = data.filter((task) => task.status === "completed");
+      setTasks((prev) => {
+        return { ...prev, completed: comptemp };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -32,36 +62,9 @@ const Boards = ({ selectedBoard }) => {
     };
     fetchUsername();
 
-    const setTasksList = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        const res = await API.get(
-          `/board/${selectedBoard.name}/tasks?userId=${userId}`
-        );
-        const data = res.data.tasks;
-        console.log(data);
-        const todotemp = data.filter((task) => task.status === "todo");
-        setTasks((prev) => {
-          return { ...prev, todo: todotemp };
-        });
-        const inptemp = data.filter((task) => task.status === "inProgress");
-        setTasks((prev) => {
-          return { ...prev, inProgress: inptemp };
-        });
-        const bltemp = data.filter((task) => task.status === "backlog");
-        setTasks((prev) => {
-          return { ...prev, backlog: bltemp };
-        });
-        const comptemp = data.filter((task) => task.status === "completed");
-        setTasks((prev) => {
-          return { ...prev, completed: comptemp };
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    
     setTasksList();
-  }, [selectedBoard]);
+  }, [selectedBoard, datachange]);
 
   const handleOpenModal = (columnId) => {
     setIsModalOpen(true);
@@ -127,7 +130,7 @@ const Boards = ({ selectedBoard }) => {
     await API.put(
       `/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,
       {
-        name: movedTask.title,
+        title: movedTask.title,
         description: movedTask.description,
         priority: movedTask.priority,
         status: destination.droppableId,
@@ -160,6 +163,7 @@ const Boards = ({ selectedBoard }) => {
   const handleEditTask = (columnId, taskIndex, task) => {
     setIsEditModalOpen(true);
     setTaskToEdit({ columnId, taskIndex, task });
+  
   };
 
   return (
@@ -590,6 +594,10 @@ const Boards = ({ selectedBoard }) => {
               isEditModalOpen={isEditModalOpen}
               taskToEdit={taskToEdit}
               closeEditModal={() => setIsEditModalOpen(false)}
+              selectedBoard={selectedBoard}
+              setDatachange={setDatachange}
+              datachange = {datachange}
+              
             />
           )}
         </div>
