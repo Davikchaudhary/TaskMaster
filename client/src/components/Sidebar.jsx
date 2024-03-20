@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import closepic from "../assets/images/close.svg";
 import editpic from "../assets/images/edit.svg";
-import API from "../axios"; // Import API functions;
-import invitePic from '../assets/images/invitePic.svg';
-import createBoardPic from '../assets/images/createBoard.svg';
-
+import API from "../axios";
+import invitePic from "../assets/images/invitePic.svg";
+import createBoardPic from "../assets/images/createBoard.svg";
+import notificationPic from "../assets/images/notification.svg";
+import boardPic from "../assets/images/board.svg";
 
 const Sidebar = ({
   openHamburger,
@@ -14,9 +15,11 @@ const Sidebar = ({
   updateBoards,
   selectedBoard,
   setOpenEditBoards,
-  handleInviteModal
+  handleInviteModal,
+  handleNotificationModal
 }) => {
   const [showBoards, setShowBoards] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false); // State for notification modal
 
   const toggleShowBoards = () => {
     setShowBoards((prevState) => !prevState);
@@ -30,17 +33,18 @@ const Sidebar = ({
   const handleDeleteBoard = async (boardName) => {
     try {
       const userId = localStorage.getItem("userId");
-
-      // Make a DELETE request to delete the board
       await API.delete(
         `/user/${userId}/board/${encodeURIComponent(boardName)}`
       );
-
-      // Update the boards list after deletion
       updateBoards();
     } catch (error) {
       console.error("Error deleting board:", error);
     }
+  };
+
+  const handleNotificationButtonClick = () => {
+    setShowNotificationModal(true);
+    handleNotificationModal(); // Add this line to notify the parent component
   };
 
   return (
@@ -58,7 +62,7 @@ const Sidebar = ({
               onClick={handleAddBoard}
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
-              <img src={createBoardPic} className="h-6 w-6"/>
+              <img src={createBoardPic} className="h-6 w-6" />
               <span className="ms-3">Create Boards</span>
             </button>
           </li>
@@ -70,18 +74,18 @@ const Sidebar = ({
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
               <svg
-  className="w-5 h-5"
-  fill="none"
-  viewBox="0 0 24 24"
-  stroke="currentColor"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="2"
-    d="M10 21h4v-4h-4v4zm-7-7h4v-4H3v4zm0-5h4V5H3v4zm7 7h4v-4h-4v4zM3 3v4h4V3H3zm14 4h4V3h-4v4zm0 5h4v-4h-4v4zM10 3h4V3h-4v4zm7 14v-4h-4v4h4zm-7 4v-4H3v4h4z"
-  />
-</svg>
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 21h4v-4h-4v4zm-7-7h4v-4H3v4zm0-5h4V5H3v4zm7 7h4v-4h-4v4zM3 3v4h4V3H3zm14 4h4V3h-4v4zm0 5h4v-4h-4v4zM10 3h4V3h-4v4zm7 14v-4h-4v4h4zm-7 4v-4H3v4h4z"
+                />
+              </svg>
 
               <span className="ms-3">
                 {showBoards ? "Hide" : "Show"} Boards
@@ -96,9 +100,10 @@ const Sidebar = ({
                 <li key={index}>
                   <div className="flex">
                     <button
-                      className="flex text-center justify-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
+                      className="flex gap-2 w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
                       onClick={() => setSelectedBoard(board)}
                     >
+                      <img src={boardPic} className="h-6 w-6" />
                       {board.name}
                     </button>
                     <div className="flex">
@@ -120,15 +125,26 @@ const Sidebar = ({
             </ul>
           </div>
         )}
-             <ul className="space-y-2 mt-2 font-medium">
+        <ul className="space-y-2 mt-2 font-medium">
           <li>
             <button
               onClick={handleInviteModal}
               className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
             >
-              <img className="h-6 w-6" src={invitePic}/>
+              <img className="h-6 w-6" src={invitePic} />
 
               <span className="ms-3">Invite</span>
+            </button>
+          </li>
+        </ul>
+        <ul className="space-y-2 mt-2 font-medium">
+          <li>
+          <button
+              onClick={handleNotificationButtonClick} // Update onClick event handler
+              className="flex items-center w-full p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
+            >
+              <img className="h-6 w-6" src={notificationPic} />
+              <span className="ms-3">Notification</span>
             </button>
           </li>
         </ul>

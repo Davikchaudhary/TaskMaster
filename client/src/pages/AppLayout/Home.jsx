@@ -6,6 +6,7 @@ import Boards from "../../components/Boards";
 import CreateBoards from "../../components/CreateBoards";
 import EditBoards from "../../components/EditBoards";
 import Invite from "../../components/Invite";
+import Notification from "../../components/Notification";
 
 const Home = () => {
   const [openHamburger, setOpenHamburger] = useState(false);
@@ -16,7 +17,7 @@ const Home = () => {
   const [userDetail, setUserDetail] = useState({});
   const [error, setError] = useState("");
   const [inviteModal, setInviteModal] = useState(false);
-
+  const [notificationModal, setNotificationModal] = useState(false);
   const userId = localStorage.getItem("userId");
 
   const getUserDetail = async () => {
@@ -74,6 +75,10 @@ const Home = () => {
     setInviteModal(true);
   };
 
+  const handleNotificationModal = () => {
+    setNotificationModal(!notificationModal);
+  };
+
   return (
     <>
       <Navbar handleHamburger={handleHamburger} userDetail={userDetail} />
@@ -85,7 +90,8 @@ const Home = () => {
         updateBoards={updateBoards}
         selectedBoard={selectedBoard}
         setOpenEditBoards={setOpenEditBoards}
-        handleInviteModal={handleInviteModal} 
+        handleInviteModal={handleInviteModal}
+        handleNotificationModal={handleNotificationModal}
       />
 
       {selectedBoard && <Boards selectedBoard={selectedBoard} />}
@@ -105,9 +111,16 @@ const Home = () => {
       )}
 
       {inviteModal && (
-        <Invite 
-          handleInviteModal={() => setInviteModal(false)} 
-          inviteModal={inviteModal} 
+        <Invite
+          handleInviteModal={() => setInviteModal(false)}
+          inviteModal={inviteModal}
+        />
+      )}
+
+      {notificationModal && (
+        <Notification
+          isOpen={notificationModal} // Pass isOpen instead of notificationModal
+          handleNotificationModal={handleNotificationModal} // Pass the handler
         />
       )}
     </>
