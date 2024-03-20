@@ -249,7 +249,7 @@ const Boards = ({ selectedBoard }) => {
                               >
                                 Edit Task
                               </button>
-                              <button onClick={() => deleteTask("todo", index,task._id)}>
+                              <button className="bg-gray-700 dark:text-white text-white  dark:hover:bg-gray-500 hover:bg-gray-500 dark:bg-gray-700 p-2 rounded-md" onClick={() => deleteTask("todo", index,task._id)}>
                                 Delete Task
                               </button>
                             </div>
