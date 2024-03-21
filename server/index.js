@@ -139,7 +139,7 @@ app.get('/boards/:id',boardapi.getBoardById);
 app.get('/user/:id/getboards',boardapi.getUserBoards);
 
 
-// creating board api
+// creating board api 
 app.post('/user/:id/addboards', boardapi.addUserBoard);
 
 
@@ -259,6 +259,35 @@ app.get('/Boards', async (req, res) => {
   try {
     const users = await Board.find();
     res.status(200).json(users);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+
+// get boards for member field of a user
+
+app.get('/user/:userId/boards', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Filter boards where the user is a member
+    const memberBoards = await Board.find({
+      members: userId,
+      createdBy: { $ne: userId } // Exclude boards created by the user
+    })
+
+    res.status(200).json({ memberBoards });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });

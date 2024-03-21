@@ -195,15 +195,18 @@ const deleteBoard = async (req, res) => {
     
       // Delete the board itself
       if(board.createdBy==userId){
-        for( const b of board.members){
+        if(board.members){
+          for( const b of board.members){
           
-          const memberuser=await User.findById(b);
-          if(memberuser.boards.includes(board._id)){
-            await memberuser.boards.pull(board._id);
-           await memberuser.save();
+            const memberuser=await User.findById(b);
+            if(memberuser.boards.includes(board._id)){
+              await memberuser.boards.pull(board._id);
+             await memberuser.save();
+            }
+             
           }
-           
         }
+        
         await Board.findOneAndDelete({ name: boardName, createdBy: userId });
       }
       else{
