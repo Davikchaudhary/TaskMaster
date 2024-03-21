@@ -6,10 +6,8 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
   useEffect(()=>{
     const setuserlist = async()=>{
       try{
-        const userId = localStorage.getItem("userId")
         const data = await API.get('/users');
-        const boards = await API.get(`/user/${userId}/getboards`)
-        console.log(boards.data)
+        const boards = await API.get('/Boards')
         setBoards(boards.data)
         setusers(data.data)
       ;}
