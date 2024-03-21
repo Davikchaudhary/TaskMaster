@@ -225,7 +225,13 @@ app.post('/board/:boardId/addBoardToUsers', async (req, res) => {
         targetUser.boards.push(boardId);
         await targetUser.save();
       }
+
+      if (!board.members.includes(targetUser._id)) {
+        board.members.push(targetUser._id);
+      }
     }
+    
+    await board.save();
 
     console.log('Board added to users successfully');
     res.status(200).json({ message: 'Board added to users successfully' });
