@@ -174,7 +174,15 @@ const deleteBoard = async (req, res) => {
       }
   
       // Find the board by boardName and createdBy (userId)
-      const board = await Board.findOne({ name: boardName, createdBy: userId });
+      // const board = await Board.findOne({ name: boardName, createdBy: userId });
+     let board=null;
+      for(const x of user.boards){
+        const target=await Board.findById(x);
+           if(target.name==boardName){
+            board=x;
+            break;
+           }
+      }
   
       if (!board) {
         return res.status(404).json({ error: 'Board not found for the user' });
@@ -185,7 +193,10 @@ const deleteBoard = async (req, res) => {
       await user.save();
   
       // Delete the board itself
-      await Board.findOneAndDelete({ name: boardName, createdBy: userId });
+      if(board.createdBy==userId){
+        await Board.findOneAndDelete({ name: boardName, createdBy: userId });
+      }
+      
   
       console.log('Board deleted successfully:', board);
       res.status(200).json({ message: 'Board deleted successfully', deletedBoard: board });
