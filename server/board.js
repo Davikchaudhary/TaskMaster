@@ -72,6 +72,12 @@ const boardSchema = new mongoose.Schema({
       return moment().format('DD MMM YYYY HH:mm:ss') // Format: "09 Mar 2024"
     },
   },
+  members:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"UserInfo",
+  }
+
+  ],
   columns: {
     todo: [{
       type: mongoose.Schema.Types.ObjectId,

@@ -179,7 +179,7 @@ const deleteBoard = async (req, res) => {
       for(const x of user.boards){
         const target=await Board.findById(x);
            if(target.name==boardName){
-            board=x;
+            board=target;
             break;
            }
       }
@@ -191,10 +191,24 @@ const deleteBoard = async (req, res) => {
       // Delete the board from the user's list of boards
       user.boards.pull(board._id);
       await user.save();
-  
+      
+    
       // Delete the board itself
       if(board.createdBy==userId){
+        for( const b of board.members){
+          
+          const memberuser=await User.findById(b);
+          if(memberuser.boards.includes(board._id)){
+            await memberuser.boards.pull(board._id);
+           await memberuser.save();
+          }
+           
+        }
         await Board.findOneAndDelete({ name: boardName, createdBy: userId });
+      }
+      else{
+        board.members.pull(user._id);
+        await board.save();
       }
       
   
