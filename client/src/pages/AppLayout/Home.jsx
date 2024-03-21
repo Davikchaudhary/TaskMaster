@@ -93,7 +93,6 @@ const Home = () => {
         handleInviteModal={handleInviteModal}
         handleNotificationModal={handleNotificationModal}
       />
-
       {selectedBoard && <Boards selectedBoard={selectedBoard} />}
       {openCreateBoards && (
         <CreateBoards

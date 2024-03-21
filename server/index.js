@@ -139,7 +139,7 @@ app.get('/boards/:id',boardapi.getBoardById);
 app.get('/user/:id/getboards',boardapi.getUserBoards);
 
 
-// creating board api
+// creating board api 
 app.post('/user/:id/addboards', boardapi.addUserBoard);
 
 
