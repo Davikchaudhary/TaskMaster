@@ -355,11 +355,6 @@ app.post('/notifications/:notificationId/accept', async (req, res) => {
         receiver.boards.push(notification.board);
         await receiver.save();
       }
-      
-      if (!board.members.includes(receiver._id)) {
-        board.members.push(receiver._id);
-        await board.save();
-      }
     }
 
     console.log('Notification accepted:', notificationId);
