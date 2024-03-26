@@ -323,8 +323,8 @@ app.post('/invite', async (req, res) => {
     });
     await newNotification.save();
 
-    receiver.notifications.push(newNotification._id);
-    await receiver.save();
+    // receiver.notifications.push(newNotification._id);
+    // await receiver.save();
 
     console.log(`Notification sent to user ${receiverId}`);
     res.status(200).json({ message: 'Notification sent successfully' });
@@ -408,6 +408,10 @@ app.get('/notifications/pending/:userId', async (req, res) => {
       receiver: userId,
       status: 'pending'
     }).populate('sender', 'uname');
+
+    if (!notifications) {
+      return res.status(404).json({ error: 'No pending notifications found' });
+    }
 
     res.status(200).json({ notifications });
   } catch (error) {
