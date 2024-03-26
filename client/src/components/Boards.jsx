@@ -50,7 +50,8 @@ const Boards = ({ selectedBoard }) => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        const userId = localStorage.getItem("userId");
+        // const userId = localStorage.getItem("userId");
+        const userId = selectedBoard.createdBy;
         if (userId) {
           const res = await API.get(`/user/${userId}`);
 
