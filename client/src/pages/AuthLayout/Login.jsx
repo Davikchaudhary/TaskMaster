@@ -27,7 +27,6 @@ const Login = () => {
         password,
       })
       .then((response) => {
-        console.log(response.data, "userRegister");
         if (response.data.status === "ok") {
           localStorage.setItem("userId", response.data.userId);
           window.localStorage.setItem("token", response.data.token);
@@ -36,12 +35,16 @@ const Login = () => {
           // window.loggedIn = true;
           navigate("/");
           window.location.reload();
+          alert(`Successful login`)
+        }
+        else {
+          alert(`Error occurred, ${response.data.error}`)
         }
       })
 
       .catch((error) => {
         console.error("Error:", error);
-        alert("An error occurred. Please try again later.");
+        alert(`An error occurred, ${error}`);
       });
   };
 
