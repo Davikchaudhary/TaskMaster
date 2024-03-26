@@ -228,6 +228,7 @@ app.post('/board/:boardId/addBoardToUsers', async (req, res) => {
 
       if (!board.members.includes(targetUser._id)) {
         board.members.push(targetUser._id);
+        await board.save();
       }
     }
     
