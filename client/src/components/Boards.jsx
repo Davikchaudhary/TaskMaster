@@ -23,7 +23,7 @@ const Boards = ({ selectedBoard }) => {
     try {
       const userId = localStorage.getItem("userId");
       const res = await API.get(
-        `/board/${selectedBoard.name}/tasks?userId=${userId}`
+        `/board/${selectedBoard._id}/tasks?userId=${userId}`
       );
       const data = res.data.tasks;
       console.log(data);
@@ -75,7 +75,7 @@ const Boards = ({ selectedBoard }) => {
     try {
       const userId = localStorage.getItem("userId");
       const res = await API.post(
-        `/board/${selectedBoard.name}/tasks?userId=${userId}`,
+        `/board/${selectedBoard._id}/tasks?userId=${userId}`,
         {
           ...newTask,
           column: columnId, // Include the column information in the request
@@ -98,7 +98,7 @@ const Boards = ({ selectedBoard }) => {
       const userId = localStorage.getItem("userId");
       console.log(taskId);
       await API.delete(
-        `/board/${selectedBoard.name}/tasks/${taskId}?userId=${userId}`
+        `/board/${selectedBoard._id}/tasks/${taskId}?userId=${userId}`
       );
     } catch (error) {
       console.log(error);
@@ -128,7 +128,7 @@ const Boards = ({ selectedBoard }) => {
       1
     )[0];
     await API.put(
-      `/board/${selectedBoard.name}/tasks/${movedTask._id}?userId=${userId}`,
+      `/board/${selectedBoard._id}/tasks/${movedTask._id}?userId=${userId}`,
       {
         title: movedTask.title,
         description: movedTask.description,
