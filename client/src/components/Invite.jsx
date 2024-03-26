@@ -10,18 +10,18 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
   const [selectedUsername, setSelectedusername] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const setuserlist = async () => {
       try {
         const userId = localStorage.getItem("userId");
-        const usersResponse = await API.get("/users");
-        const boardsResponse = await API.get(`/user/${userId}/getboards`);
-        setBoards(boardsResponse.data);
-        setusers(usersResponse.data);
+        const data = await API.get("/users");
+        const boards = await API.get(`/user/${userId}/getboards`);
+        setBoards(boards.data);
+        setusers(data.data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
+    setuserlist();
   }, []);
 
   console.log(selectedUsername, selectedBoard);
@@ -29,20 +29,25 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
   const handleInvitation = async (e) => {
     e.preventDefault();
     if (selectedUsername && selectedBoard) {
+      const res = await API.get(`/boards/${selectedBoard}`);
+      setSelecteduser(res.data.members === null ? [] : res.data.members);
+
+      let temp = [...selectedUser];
+      temp.push(selectedUsername);
+      setSelecteduser(temp);
       try {
         const userID = localStorage.getItem("userId");
-        const response = await API.post('/invite', {
-          senderId: userID,
-          receiverId: selectedUsername,
-          boardId: selectedBoard
-        });
-
+        const response = await API.post(
+          `/board/${selectedBoard}/addBoardToUsers?userId=${userID}`,
+          {
+            userIds: temp,
+          }
+        );
         console.log(response);
         alert("Invitation sent successfully");
         handleInviteModal();
       } catch (error) {
-        console.error('Error sending invitation:', error);
-        alert("Failed to send invitation");
+        alert("error:", error);
       }
     }
   };

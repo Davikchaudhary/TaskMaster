@@ -18,7 +18,6 @@ const Home = () => {
   const [error, setError] = useState("");
   const [inviteModal, setInviteModal] = useState(false);
   const [notificationModal, setNotificationModal] = useState(false);
-  const [notifications, setNotifications] = useState([]); // State to hold notifications data
   const userId = localStorage.getItem("userId");
 
   const getUserDetail = async () => {
@@ -33,7 +32,6 @@ const Home = () => {
   useEffect(() => {
     getUserDetail();
     getBoards(); // Fetch boards when the component mounts
-    getNotifications(); // Fetch notifications when the component mounts
   }, []);
 
   const getBoards = async () => {
@@ -42,15 +40,6 @@ const Home = () => {
       setCreatedBoards(res.data); // Set the fetched boards to state
     } catch (error) {
       console.error("Error fetching boards:", error);
-    }
-  };
-
-  const getNotifications = async () => { // Function to fetch notifications
-    try {
-      const res = await API.get(`/notifications/pending/${userId}`);
-      setNotifications(res.data.notifications); // Set the fetched notifications to state
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
     }
   };
 
@@ -129,9 +118,8 @@ const Home = () => {
 
       {notificationModal && (
         <Notification
-          isOpen={true}
-          handleNotificationModal={handleNotificationModal}
-          notifications={notifications} // Pass notifications data as prop
+          isOpen={notificationModal} // Pass isOpen instead of notificationModal
+          handleNotificationModal={handleNotificationModal} // Pass the handler
         />
       )}
     </>
