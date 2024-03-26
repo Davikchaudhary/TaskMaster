@@ -323,6 +323,9 @@ app.post('/invite', async (req, res) => {
     });
     await newNotification.save();
 
+    receiver.notifications.push(newNotification._id);
+    await receiver.save();
+
     console.log(`Notification sent to user ${receiverId}`);
     res.status(200).json({ message: 'Notification sent successfully' });
   } catch (error) {
