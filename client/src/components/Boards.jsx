@@ -489,7 +489,7 @@ const Boards = ({ selectedBoard }) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col min-w-72  sm:w-full gap-2 md:w-1/4 lg:w-1/4"
+                   className="flex flex-col min-w-72 sm:w-full gap-2 md:w-1/4 lg:w-1/4"
                 >
                   {/* Completed Header */}
                   <div className="flex justify-between rounded-xl bg-green-400 p-4 shadow-lg">
