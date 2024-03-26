@@ -339,6 +339,8 @@ app.post('/notifications/:notificationId/accept', async (req, res) => {
 
   try {
     const notification = await Notification.findById(notificationId);
+    const boardId=notification.board;
+    const board=await Board.findById(boardId);
     if (!notification) {
       return res.status(404).json({ error: 'Notification not found' });
     }
@@ -352,6 +354,11 @@ app.post('/notifications/:notificationId/accept', async (req, res) => {
       if (!receiver.boards.includes(notification.board)) {
         receiver.boards.push(notification.board);
         await receiver.save();
+      }
+      
+      if (!board.members.includes(receiver._id)) {
+        board.members.push(receiver._id);
+        await board.save();
       }
     }
 
