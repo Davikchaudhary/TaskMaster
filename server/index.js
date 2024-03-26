@@ -58,20 +58,20 @@ app.post("/register", async (req, res) => {
       boards: [],
     });
 
-    const newBoard = await Board.create({
-      name: "Default Board",
-      createdBy: newUser._id,
-      columns: {
-        todo: [],
-        backlog: [],
-        inProgress: [],
-        completed: [],
-      },
-    });
+    // const newBoard = await Board.create({
+    //   name: "Default Board",
+    //   createdBy: newUser._id,
+    //   columns: {
+    //     todo: [],
+    //     backlog: [],
+    //     inProgress: [],
+    //     completed: [],
+    //   },
+    // });
 
-    await newBoard.save();
+    // await newBoard.save();
 
-    newUser.boards.push(newBoard._id);
+    // newUser.boards.push(newBoard._id);
     await newUser.save();
 
     res.send({ status: "ok" });
