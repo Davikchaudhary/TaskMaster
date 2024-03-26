@@ -188,14 +188,14 @@ const Boards = ({ selectedBoard }) => {
             </div>
           )}
 
-          <div className="flex mt-4 flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10">
+<div className="flex mt-4 flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-10 overflow-auto">
             {/* Todo Column */}
             <Droppable droppableId="todo">
               {(provided) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                  className="flex flex-col min-w-72  sm:w-full gap-2 md:w-1/4 lg:w-1/4"
                 >
                   <div className="flex justify-between rounded-xl bg-blue-400 p-4 shadow-lg">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-indigo-50">
@@ -292,7 +292,7 @@ const Boards = ({ selectedBoard }) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                  className="flex flex-col min-w-72  sm:w-full gap-2 md:w-1/4 lg:w-1/4"
                 >
                   {/* Backlog Header */}
                   <div className="flex justify-between rounded-xl bg-red-400 p-4 shadow-lg">
@@ -390,7 +390,7 @@ const Boards = ({ selectedBoard }) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                  className="flex flex-col min-w-72  sm:w-full gap-2 md:w-1/4 lg:w-1/4"
                 >
                   {/* In Progress Header */}
                   <div className="flex justify-between rounded-xl bg-orange-400 p-4 shadow-lg">
@@ -488,7 +488,7 @@ const Boards = ({ selectedBoard }) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col w-full sm:w-1/4 gap-2"
+                  className="flex flex-col min-w-72  sm:w-full gap-2 md:w-1/4 lg:w-1/4"
                 >
                   {/* Completed Header */}
                   <div className="flex justify-between rounded-xl bg-green-400 p-4 shadow-lg">
