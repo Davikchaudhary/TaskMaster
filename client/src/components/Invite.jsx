@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import API from "../axios";
-
+ 
 const Invite = ({ handleInviteModal, inviteModal }) => {
   const [users, setusers] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -8,50 +8,45 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
   const userID = localStorage.getItem("userId");
   const [selectedUser, setSelecteduser] = useState([]);
   const [selectedUsername, setSelectedusername] = useState(null);
-
+ 
   useEffect(() => {
-    const setuserlist = async () => {
+    const fetchData = async () => {
       try {
         const userId = localStorage.getItem("userId");
-        const data = await API.get("/users");
-        const boards = await API.get(`/user/${userId}/getboards`);
-        setBoards(boards.data);
-        setusers(data.data);
+        const usersResponse = await API.get("/users");
+        const boardsResponse = await API.get(`/user/${userId}/getboards`);
+        setBoards(boardsResponse.data);
+        setusers(usersResponse.data);
       } catch (error) {
         console.log(error);
       }
     };
-    setuserlist();
+    fetchData();
   }, []);
-
+ 
   console.log(selectedUsername, selectedBoard);
-  
+ 
   const handleInvitation = async (e) => {
     e.preventDefault();
     if (selectedUsername && selectedBoard) {
-      const res = await API.get(`/boards/${selectedBoard}`);
-      setSelecteduser(res.data.members === null ? [] : res.data.members);
-
-      let temp = [...selectedUser];
-      temp.push(selectedUsername);
-      setSelecteduser(temp);
       try {
         const userID = localStorage.getItem("userId");
-        const response = await API.post(
-          `/board/${selectedBoard}/addBoardToUsers?userId=${userID}`,
-          {
-            userIds: temp,
-          }
-        );
+        const response = await API.post('/invite', {
+          senderId: userID,
+          receiverId: selectedUsername,
+          boardId: selectedBoard
+        });
+ 
         console.log(response);
         alert("Invitation sent successfully");
         handleInviteModal();
       } catch (error) {
-        alert("error:", error);
+        console.error('Error sending invitation:', error);
+        alert("Failed to send invitation");
       }
     }
   };
-
+ 
   return (
     <>
       <div
@@ -143,5 +138,5 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
     </>
   );
 };
-
+ 
 export default Invite;
