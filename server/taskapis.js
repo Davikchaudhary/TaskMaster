@@ -8,12 +8,12 @@ const Task=mongoose.model("Task");
 
 const createTask = async (req, res) => {
     const { userId } = req.query;
-    const { boardName } = req.params;
+    const { boardId } = req.params;
     const { title, description, priority, column } = req.body;
   
     try {
       // Find the board by name and user
-      const board = await Board.findOne({ name: boardName, createdBy: userId });
+      const board = await Board.findById(boardId);
   
       if (!board) {
         return res.status(404).json({ error: 'Board not found' });
@@ -54,12 +54,12 @@ const createTask = async (req, res) => {
 
   const updateTask = async (req, res) => {
     const { userId } = req.query;
-    const { boardName, taskId } = req.params;
+    const { boardId, taskId } = req.params;
     const { title, description, priority, status } = req.body;
   
     try {
       // Find the board by name and user
-      const board = await Board.findOne({ name: boardName, createdBy: userId });
+      const board = await Board.findById(boardId);
   
       if (!board) {
         return res.status(404).json({ error: 'Board not found' });
@@ -136,11 +136,11 @@ const createTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
     const { userId } = req.query;
-    const { boardName, taskId } = req.params;
+    const { boardId, taskId } = req.params;
   
     try {
       // Find the board by name and user
-      const board = await Board.findOne({ name: boardName, createdBy: userId });
+      const board = await Board.findById(boardId);
   
       if (!board) {
         return res.status(404).json({ error: 'Board not found' });
@@ -188,11 +188,11 @@ const deleteTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
     const { userId } = req.query;
-    const { boardName } = req.params;
+    const { boardId } = req.params;
   
     try {
       // Find the board by name and user, populating the tasks in each column
-      const board = await Board.findOne({ name: boardName, createdBy: userId })
+      const board = await Board.findById(boardId)
         .populate('columns.todo')
         .populate('columns.backlog')
         .populate('columns.inProgress')
