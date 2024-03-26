@@ -1,27 +1,32 @@
 import React from "react";
 import API from "../axios";
- 
+
 const Notification = ({ isOpen, handleNotificationModal, notifications }) => {
   const acceptInvitation = async (notificationId) => {
     try {
       await API.post(`/notifications/${notificationId}/accept`);
       // Handle UI update upon successful acceptance
+      handleNotificationModal(); // Close modal
+      window.location.reload(); // Refresh the page
     } catch (error) {
       console.error('Error accepting invitation:', error);
       // Handle error
     }
   };
- 
+
   const declineInvitation = async (notificationId) => {
     try {
       await API.post(`/notifications/${notificationId}/reject`);
       // Handle UI update upon successful rejection
+      handleNotificationModal(); // Close modal
+      window.location.reload(); // Refresh the page
     } catch (error) {
       console.error('Error declining invitation:', error);
       // Handle error
     }
   };
- 
+
+
   return (
     <>
       <div
@@ -54,7 +59,7 @@ const Notification = ({ isOpen, handleNotificationModal, notifications }) => {
               </svg>
             </button>
           </div>
- 
+
           {notifications.map((notification) => (
             <div key={notification._id} className="relative w-full max-w-md mx-auto dark:bg-gray-700 bg-white rounded-lg shadow-lg">
               <div className="flex items-center justify-between p-4">
@@ -63,14 +68,14 @@ const Notification = ({ isOpen, handleNotificationModal, notifications }) => {
                 </h1>
                 <div className="flex flex-row">
                   <button
-                    type="button"
+                    type="submit" 
                     onClick={() => acceptInvitation(notification._id)}
                     className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
                   >
                     Accept
                   </button>
                   <button
-                    type="button"
+                    type="submit" 
                     onClick={() => declineInvitation(notification._id)}
                     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
                   >
@@ -85,5 +90,5 @@ const Notification = ({ isOpen, handleNotificationModal, notifications }) => {
     </>
   );
 };
- 
+
 export default Notification;
