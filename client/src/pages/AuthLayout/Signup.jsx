@@ -33,7 +33,7 @@ const Signup = () => {
         console.log(response.data, "userRegister");
         const data = response.data;
         if (data.status === "ok") {
-          setMessage("Registration successful.");
+          alert("Registration successful. Redirecting to login page.");
           setFormData({
             uname: "",
             email: "",
@@ -41,12 +41,12 @@ const Signup = () => {
           });
           navigate("/login");
         } else {
-          alert("Registration failed. Please try again later.");
+          alert(`Registration failed, ${data.error}`);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("An error occurred. Please try again later.");
+        alert(`An error occurred. Please try again later. ${error}`);
       });
   };
 

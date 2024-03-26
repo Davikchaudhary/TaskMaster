@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import API from "../axios";
+
 const Invite = ({ handleInviteModal, inviteModal }) => {
   const [users, setusers] = useState([]);
   const [boards, setBoards] = useState([]);
-  const [selectedBoard,setSelectedBoard] = useState(null);
-  const userID = localStorage.getItem("userId")
-  const [selectedUser,setSelecteduser] = useState([]);
-  const [selectedUsername,setSelectedusername] = useState(null);
+  const [selectedBoard, setSelectedBoard] = useState(null);
+  const userID = localStorage.getItem("userId");
+  const [selectedUser, setSelecteduser] = useState([]);
+  const [selectedUsername, setSelectedusername] = useState(null);
+
   useEffect(() => {
     const setuserlist = async () => {
       try {
@@ -21,33 +23,33 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
     };
     setuserlist();
   }, []);
-  console.log(selectedUsername,selectedBoard)
+
+  console.log(selectedUsername, selectedBoard);
+  
   const handleInvitation = async (e) => {
-    e.preventDefault()
-    if(selectedUsername&&selectedBoard){
-      const res = await API.get(`/boards/${selectedBoard}`)
-      setSelecteduser(res.data.members===null?[]:res.data.members)
-      
+    e.preventDefault();
+    if (selectedUsername && selectedBoard) {
+      const res = await API.get(`/boards/${selectedBoard}`);
+      setSelecteduser(res.data.members === null ? [] : res.data.members);
+
       let temp = [...selectedUser];
       temp.push(selectedUsername);
       setSelecteduser(temp);
       try {
-        const userID = localStorage.getItem("userId")
+        const userID = localStorage.getItem("userId");
         const response = await API.post(
           `/board/${selectedBoard}/addBoardToUsers?userId=${userID}`,
           {
             userIds: temp,
           }
         );
-        console.log(response)
+        console.log(response);
         alert("Invitation sent successfully");
         handleInviteModal();
       } catch (error) {
         alert("error:", error);
       }
     }
-    
-    
   };
 
   return (
@@ -88,12 +90,20 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Add Users
                 </label>
-                <select value={selectedUsername} onChange={(e)=>{
-                  setSelectedusername(e.target.value);
-                }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <select
+                  value={selectedUsername}
+                  onChange={(e) => {
+                    setSelectedusername(e.target.value);
+                  }}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                >
                   <option value="">Select User</option>
-                  {users.map((user,index) => {
-                    return <option value={user._id}  key={index}>{user.uname}</option>;
+                  {users.map((user, index) => {
+                    return (
+                      <option value={user._id} key={index}>
+                        {user.uname}
+                      </option>
+                    );
                   })}
                 </select>
               </div>
@@ -101,10 +111,20 @@ const Invite = ({ handleInviteModal, inviteModal }) => {
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Add Boards
                 </label>
-                <select onChange={(e)=>{setSelectedBoard(e.target.value)}} value={selectedBoard} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <select
+                  onChange={(e) => {
+                    setSelectedBoard(e.target.value);
+                  }}
+                  value={selectedBoard}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                >
                   <option value={null}>Select Boards</option>
-                  {boards.map((board,index) => {
-                    return <option value={board._id} key={index} >{board.name}</option>;
+                  {boards.map((board, index) => {
+                    return (
+                      <option value={board._id} key={index}>
+                        {board.name}
+                      </option>
+                    );
                   })}
                 </select>
               </div>
