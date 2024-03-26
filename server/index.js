@@ -161,12 +161,12 @@ app.delete('/user/:userId/board/:boardName', boardapi.deleteBoard);
 //Post the task
 
 
-app.post('/board/:boardName/tasks',taskapi.createTask);
+app.post('/board/:boardId/tasks',taskapi.createTask);
 
 
 
 // PUT update a task for a board
-app.put('/board/:boardName/tasks/:taskId', taskapi.updateTask);
+app.put('/board/:boardId/tasks/:taskId', taskapi.updateTask);
 
 
 
@@ -175,12 +175,12 @@ app.put('/board/:boardName/tasks/:taskId', taskapi.updateTask);
 
 
 // DELETE a task for a board
- app.delete('/board/:boardName/tasks/:taskId', taskapi.deleteTask);
+ app.delete('/board/:boardId/tasks/:taskId', taskapi.deleteTask);
 
 
 
 // get all task of a board
-app.get('/board/:boardName/tasks', taskapi.getTasks);
+app.get('/board/:boardId/tasks', taskapi.getTasks);
 
 
 // gettting single task by id
