@@ -180,7 +180,7 @@ const Boards = ({ selectedBoard }) => {
                 {selectedBoard.name}
               </h2>
               <div className="flex justify-between  flex-col dark:bg-lime-100 bg-lime-100 p-2 ">
-                <h3 className="font-light">Created by: {selectedBoard.userId}</h3>
+                <h3 className="font-light">Created by: {createdByUname}</h3>
                 <h3 className="font-extralight">
                   Created on: {selectedBoard.createdAt}
                 </h3>

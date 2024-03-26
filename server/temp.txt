@@ -549,7 +549,3 @@ app.delete('/boards/:boardId/columns/:columnId/tasks/:taskId/subtasks/:subtaskId
       res.status(400).json({ message: err.message });
     }
   });
-
-
-
-  //only for code push
