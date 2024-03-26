@@ -35,6 +35,9 @@ require("./board.js");
 const Board=mongoose.model("Board");
 const Task=mongoose.model("Task");
 
+require("./notification.js");
+const Notification=mongoose.model("Notification");
+
 boardapi=require("./boardapis");
 taskapi=require("./taskapis");
 
@@ -56,6 +59,7 @@ app.post("/register", async (req, res) => {
       email,
       password: encryptedPassword,
       boards: [],
+      notifications:[],
     });
 
     // const newBoard = await Board.create({
@@ -289,6 +293,113 @@ app.get('/user/:userId/boards', async (req, res) => {
     })
 
     res.status(200).json({ memberBoards });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+// Notification Apis
+app.post('/invite', async (req, res) => {
+  const { senderId, receiverId, boardId } = req.body;
+
+  try {
+    // Find the sender, receiver, and board
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById(receiverId);
+    const board = await Board.findById(boardId);
+
+    if (!sender || !receiver || !board) {
+      return res.status(404).json({ error: 'Sender, receiver, or board not found' });
+    }
+
+    // Create a new notification
+    const newNotification = new Notification({
+      sender: sender._id,
+      receiver: receiver._id,
+      board: board._id,
+    });
+    await newNotification.save();
+
+    console.log(`Notification sent to user ${receiverId}`);
+    res.status(200).json({ message: 'Notification sent successfully' });
+  } catch (error) {
+    console.error('Error sending notification:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+//handle accept response
+app.post('/notifications/:notificationId/accept', async (req, res) => {
+  const { notificationId } = req.params;
+
+  try {
+    const notification = await Notification.findById(notificationId);
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+
+    notification.status = 'accepted';
+    await notification.save();
+
+    // Add the board to the receiver's list of boards
+    const receiver = await User.findById(notification.receiver);
+    if (receiver) {
+      if (!receiver.boards.includes(notification.board)) {
+        receiver.boards.push(notification.board);
+        await receiver.save();
+      }
+    }
+
+    console.log('Notification accepted:', notificationId);
+    res.status(200).json({ message: 'Notification accepted successfully' });
+  } catch (error) {
+    console.error('Error accepting notification:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+//handle rejection
+app.post('/notifications/:notificationId/reject', async (req, res) => {
+  const { notificationId } = req.params;
+
+  try {
+    const notification = await Notification.findById(notificationId);
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' });
+    }
+
+    notification.status = 'rejected';
+    await notification.save();
+
+    console.log('Notification rejected:', notificationId);
+    res.status(200).json({ message: 'Notification rejected successfully' });
+  } catch (error) {
+    console.error('Error rejecting notification:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+// get users notifications
+app.get('/notifications/pending/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find notifications where the user is the receiver and status is pending
+    const notifications = await Notification.find({
+      receiver: userId,
+      status: 'pending'
+    }).populate('sender', 'uname');
+
+    res.status(200).json({ notifications });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });
