@@ -28,7 +28,7 @@ const EditTask = ({ isEditModalOpen, taskToEdit, closeEditModal,selectedBoard,se
     const userId = localStorage.getItem("userId");
     try{
       await API.put(
-      `/board/${selectedBoard.name}/tasks/${formData.id}?userId=${userId}`,
+      `/board/${selectedBoard._id}/tasks/${formData.id}?userId=${userId}`,
       {
         title: formData.title,
         description: formData.description,
