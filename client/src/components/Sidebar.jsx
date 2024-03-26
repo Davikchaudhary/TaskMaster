@@ -145,9 +145,6 @@ const Sidebar = ({
             >
               <img className="h-6 w-6" src={notificationPic} />
               <span className="ms-3">Notification</span>
-              <span className="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-red-600 bg-red-200 rounded-full">
-                1
-                </span>
             </button>
           </li>
         </ul>
