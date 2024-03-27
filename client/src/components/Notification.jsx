@@ -64,7 +64,7 @@ const Notification = ({ isOpen, handleNotificationModal, notifications }) => {
             <div key={notification._id} className="relative w-full max-w-md mx-auto dark:bg-gray-700 bg-white rounded-lg shadow-lg">
               <div className="flex items-center justify-between p-4">
                 <h1 className="text-md  dark:text-white text-black">
-                  {notification.sender.uname} has requested to join the {notification.board.name}
+                  {notification.sender.uname} has requested to join the {notification.board}
                 </h1>
                 <div className="flex flex-row">
                   <button
