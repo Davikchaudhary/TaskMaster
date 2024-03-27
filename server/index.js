@@ -407,7 +407,8 @@ app.get('/notifications/pending/:userId', async (req, res) => {
     const notifications = await Notification.find({
       receiver: userId,
       status: 'pending'
-    }).populate('sender', 'uname');
+    }).populate('sender', 'uname')
+    .populate('board', 'name');
 
     if (!notifications) {
       return res.status(404).json({ error: 'No pending notifications found' });
