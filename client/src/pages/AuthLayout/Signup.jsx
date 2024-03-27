@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../../axios";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -23,8 +23,8 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5000/register", {
+    API
+      .post("/register", {
         uname: formData.uname,
         email: formData.email,
         password: formData.password,

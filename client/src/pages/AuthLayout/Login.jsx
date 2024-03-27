@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/logo.png";
-import axios from "axios";
+import API from "../../axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -21,8 +21,7 @@ const Login = () => {
     e.preventDefault();
 
     console.log(email, password);
-    axios
-      .post("http://localhost:5000/login-user", {
+    API.post("/login-user", {
         email,
         password,
       })
